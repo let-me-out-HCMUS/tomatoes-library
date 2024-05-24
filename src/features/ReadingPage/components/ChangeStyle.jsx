@@ -23,10 +23,6 @@ export default function ChangeStyle({
   const listFont = [" font-sans ", " font-serif ", " font-mono "];
   const listLeading = [
     {
-      display: 0.75,
-      value: " leading-tight ",
-    },
-    {
       display: 1,
       value: " leading-normal ",
     },
