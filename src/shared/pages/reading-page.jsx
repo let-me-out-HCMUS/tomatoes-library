@@ -1,28 +1,56 @@
 // import { TextField } from "@mui/material";
-import { useState } from "react";
-import CustomDialog from "../../features/ReadingPage/components/Dialog";
-import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
-import Content from "../../features/ReadingPage/components/Content";
-import { data } from "../../assets/reading-page-mock";
+import { useState, useRef } from 'react';
+import CustomDialog from '../../features/ReadingPage/components/Dialog';
+import ChangeStyle from '../../features/ReadingPage/components/ChangeStyle';
+import Content from '../../features/ReadingPage/components/Content';
+import { data } from '../../assets/reading-page-mock';
+import { jsPDF } from 'jspdf';
 
 export default function ReadingPage() {
   const [color, setColor] = useState(
-    localStorage.getItem("color") || " text-blue-500 "
+    localStorage.getItem('color') || ' text-blue-500 '
   );
   const [bgColor, setBgColor] = useState(
-    localStorage.getItem("bgColor") || " bg-yellow-100 "
+    localStorage.getItem('bgColor') || ' bg-yellow-100 '
   );
   const [fontSize, setFontSize] = useState(
-    localStorage.getItem("fontSize") || 16
+    localStorage.getItem('fontSize') || 16
   );
   const [fontFamily, setFontFamily] = useState(
-    localStorage.getItem("fontFamily") || " font-sans "
+    localStorage.getItem('fontFamily') || ' font-sans '
   );
-  const [leading, setLeading] = useState(localStorage.getItem("leading") || "");
+  const [leading, setLeading] = useState(localStorage.getItem('leading') || '');
   const [textAlign, setTextAlign] = useState(
-    localStorage.getItem("textAlign") || " text-left "
+    localStorage.getItem('textAlign') || ' text-left '
   );
   const [open, setOpen] = useState(false);
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    const storyContent = document.getElementById('story-content').textContent;
+
+    console.log(storyContent);
+
+    doc.setFont('helvetica'); // set font
+    doc.setFontSize(12); // set font size
+    const lines = doc.splitTextToSize(storyContent, 180);
+    let y = 10; // start y position
+
+    const pageHeight =
+      doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+
+    for (let i = 0; i < lines.length; i++) {
+      if (y > pageHeight - 10) {
+        // Go to next page if the line won't fit
+        doc.addPage();
+        y = 10; // reset y position to top of new page
+      }
+      doc.text(lines[i], 10, y);
+      y += 10; // move y down for next line
+    }
+
+    doc.save('Story.pdf');
+  };
 
   // const changeColor = () => {
   //   setColor(" text-red-500 ");
@@ -37,18 +65,27 @@ export default function ReadingPage() {
 
   return (
     <div className=" relative h-full">
-        <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
-          <h1 className=" text-4xl mb-2">{data.title}</h1>
-          <h2 className=" text-xl">{data.chapter}</h2>
-          <h3>Độ dài: 1000 từ</h3>
-          <select name="" id="" className=" w-10/12" defaultValue={data.chapter}>
-            {data.list.reverse().map((item) => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
-        </div>
-        <Content fontSize={fontSize} color={color} leading={leading} bgColor={bgColor} fontFamily={fontFamily} textAlign={textAlign} />
-        {/* <div
+      <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
+        <h1 className=" text-4xl mb-2">{data.title}</h1>
+        <h2 className=" text-xl">{data.chapter}</h2>
+        <h3>Độ dài: 1000 từ</h3>
+        <select name="" id="" className=" w-10/12" defaultValue={data.chapter}>
+          {data.list.reverse().map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      </div>
+      <Content
+        fontSize={fontSize}
+        color={color}
+        leading={leading}
+        bgColor={bgColor}
+        fontFamily={fontFamily}
+        textAlign={textAlign}
+      />
+      {/* <div
           style={{ fontSize: `${fontSize}px` }}
           className={
             ` p-4` + color + leading + bgColor + fontFamily + textAlign
@@ -112,21 +149,26 @@ export default function ReadingPage() {
         </div> */}
 
       <div className=" flex flex-col fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 p-2 text-2xl bg-white">
-        <button className=" border-b-2 border-solid border-black p-2" onClick={() => window.scrollTo(0,0)}>
+        <button
+          className=" border-b-2 border-solid border-black p-2"
+          onClick={() => window.scrollTo(0, 0)}
+        >
           ▲
         </button>
-        <button className=" border-b-2 border-solid border-black p-2">
-          ≪
-        </button>
+        <button className=" border-b-2 border-solid border-black p-2">≪</button>
         <button className=" border-b-2 border-solid border-black p-2">
           🏠
         </button>
-        <button className=" border-b-2 border-solid border-black p-2" onClick={() => setOpen(true)}>
+        <button
+          className=" border-b-2 border-solid border-black p-2"
+          onClick={() => setOpen(true)}
+        >
           🖌
         </button>
-        <button className=" p-2">
-          ≫
-        </button> 
+        <button className=" p-2">≫</button>
+        <button className=" p-2" onClick={exportToPDF}>
+          ⇓
+        </button>
       </div>
 
       {/* <button
@@ -138,7 +180,8 @@ export default function ReadingPage() {
       <CustomDialog
         open={open}
         title="Tuỳ chỉnh"
-        onClose={() => setOpen(false)}>
+        onClose={() => setOpen(false)}
+      >
         <ChangeStyle
           fontSize={fontSize}
           setColor={setColor}
