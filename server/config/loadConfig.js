@@ -24,10 +24,47 @@ exports.getStoryContent = async function (source, storySlug, chapter) {
             }`
     )(fetch, JSDOM);
 
-    const result = await getContentFunc(sourceConfig.source, storySlug, chapter);
+    const result = await getContentFunc(storySlug, chapter);
     return result;
   } catch (error) {
     console.error("Error loading config:", error);
     return "";
+  }
+};
+
+exports.listStories = async function () {
+  try {
+    const data = fs.readFileSync("./config/config.json", {
+      encoding: "utf-8",
+    });
+
+    const config = JSON.parse(data);
+    const totalStories = []
+    for (let i = 0; i < config.length; i++){
+      sourceConfig = config[i]
+  
+      const listStoriesFunc = new Function(
+        "fetch",
+        "JSDOM",
+        `return async function(){
+                  ${sourceConfig.listStories.handler}
+              }`
+      )(fetch, JSDOM);
+  
+      const result = await listStoriesFunc();
+      for (let j = 0; j < result.length; j++){
+        const idx = totalStories.findIndex(story => story.name === result[j].name)
+        if (idx === -1){
+          totalStories.push(result[j])
+        } else {
+          totalStories[idx].totalChapter = Math.max(totalStories[idx].totalChapter, result[j].totalChapter)
+        }
+      }
+    }
+
+    return totalStories;
+  } catch (error) {
+    console.error("Error loading config:", error);
+    return [];
   }
 };
