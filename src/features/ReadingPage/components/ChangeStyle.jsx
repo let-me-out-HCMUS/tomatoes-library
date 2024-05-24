@@ -20,7 +20,7 @@ export default function ChangeStyle({
     " bg-pink-100 ",
     " bg-slate-800 ",
   ];
-  const listFont = [" font-sans ", " font-serif ", " font-mono "];
+  const listFont = [" font-sans ", " font-serif ", " font-mono ", " font-palatino"];
   const listLeading = [
     {
       display: 1,
