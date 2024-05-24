@@ -4,7 +4,7 @@ export default function Content({fontSize, color, leading, bgColor, fontFamily, 
         <div
           style={{ fontSize: `${fontSize}px` }}
           className={
-            ` leading p-8` + color + leading + bgColor + fontFamily + textAlign
+            ` leading py-10 px-36 ` + color + leading + bgColor + fontFamily + textAlign
           }>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
           ornare aliquet ipsum, ac tempus justo dapibus sit amet. Suspendisse
