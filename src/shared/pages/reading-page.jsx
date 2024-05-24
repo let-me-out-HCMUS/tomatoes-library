@@ -94,7 +94,14 @@ export default function ReadingPage() {
       <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
         <h1 className=" text-4xl mb-2">{data.title}</h1>
         <h2 className=" text-xl">{data.chapter}</h2>
-        <h3>Độ dài: 1000 từ</h3>
+        <h3 className=" mb-4">Độ dài: 1000 từ</h3>
+        <select className=" mb-2" name="" id="" defaultValue={data.activeServer}>
+          {data.server.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
         <select name="" id="" className=" w-10/12" defaultValue={data.chapter}>
           {data.list.reverse().map((item) => (
             <option key={item} value={item}>
