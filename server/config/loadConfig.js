@@ -68,3 +68,33 @@ exports.listStories = async function () {
     return [];
   }
 };
+
+exports.getStory = async function (source, storySlug) {
+  try {
+    const data = fs.readFileSync("./config/config.json", {
+      encoding: "utf-8",
+    });
+
+    const config = JSON.parse(data);
+    let sourceConfig = config.find((cfg) => cfg.source === source);
+    if (!sourceConfig) {
+      sourceConfig = config[0];
+    }
+
+    const params = sourceConfig.getStory.params.join(", ");
+
+    const getContentFunc = new Function(
+      "fetch",
+      "JSDOM",
+      `return async function(${params}){
+                ${sourceConfig.getStory.handler}
+            }`
+    )(fetch, JSDOM);
+
+    const result = await getContentFunc(storySlug);
+    return result;
+  } catch (error) {
+    console.error("Error loading config:", error);
+    return "";
+  }
+};
