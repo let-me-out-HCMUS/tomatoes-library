@@ -1,0 +1,29 @@
+[
+  {
+    "source": "truyen.tangthuvien.vn",
+    "getContent": {
+      "params": ["storySlug", "chapter"],
+      "handler": "let url = `https://truyen.tangthuvien.vn/doc-truyen/${storySlug}/chuong-${chapter}/`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let content = document.querySelector('.box-chap').innerHTML; return content;"
+    },
+    "listStories": {
+      "handler": "let url = `https://truyen.tangthuvien.vn/tong-hop`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let stories = Array.from(document.querySelector('.book-img-text').querySelectorAll('li')).map(li => { const a = li.querySelectorAll('a'); return { coverImage: a[0].querySelector('img').src, name: a[1].innerHTML, author: a[2].innerHTML }; }); return stories;"
+    },
+    "getStory": {
+      "params": ["storySlug"],
+      "handler": "let url = `https://truyen.tangthuvien.vn/doc-truyen/${storySlug}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; const imgUrl = document.querySelector('.book-img a img').src; const storyName = document.querySelector('.book-info h1').innerHTML.split(' - ')[0]; const description = document.querySelector('.book-intro p').innerHTML; const dataTag = document.querySelector('.book-info p'); const author = dataTag.querySelector('a').innerHTML; const isFull = dataTag.querySelector('span').innerHTML === 'Đang ra' ? false : true; const category = dataTag.querySelectorAll('a')[1].innerHTML; const totalChapter = parseInt(document.querySelectorAll('.detail')[1].querySelector('p a').innerHTML.split(' ')[1], 10); let story = { name: storyName, description: description, category: category, totalChapter: totalChapter, author: author, coverImage: imgUrl, isFull: isFull }; return story;"
+    },
+    "search": {
+      "params": ["searchString"],
+      "handler": "let url = `https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=${searchString}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.book-img-text').querySelectorAll('li'); let stories = []; for (let i = 0; i < nodeList.length; i++) { const a = nodeList[i].querySelectorAll('a'); stories.push({ coverImage: a[0].querySelector('img').src, name: a[1].innerHTML, author: a[2].innerHTML }); } return stories;"
+    },
+    "category": {
+      "list": {
+        "handler": "let url = 'https://truyen.tangthuvien.vn/the-loai/canh-ky'; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.nav-list.site-nav.fl').querySelectorAll('a:not([class]):not([id])'); let categories = []; for (let i = 0; i < nodeList.length; i++) { categories.push(nodeList[i].innerHTML); } return categories;"
+      },
+      "getStories": {
+          "params": ["categorySlug"],
+          "handler": "let url = `https://truyen.tangthuvien.vn/the-loai/${categorySlug}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.update-table.all').querySelectorAll('tr'); let stories = []; for (let i = 0; i < nodeList.length; i++) { const td = nodeList[i].querySelectorAll('a'); stories.push({ name: td[1].innerHTML, category: td[0].innerHTML, totalChapter: parseInt(td[2].innerHTML.split(' ')[1], 10), author: td[3].innerHTML }); } return stories;"
+      }
+    }
+  }
+]
