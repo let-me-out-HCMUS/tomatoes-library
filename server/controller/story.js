@@ -1,4 +1,4 @@
-const { getStoryContent, listStories, getStory } = require("../config/loadConfig");
+const { getStoryContent, listStories, getStory, search } = require("../config/loadConfig");
 
 exports.getStoryContent = async function (req, res, next) {
   try {
@@ -44,17 +44,40 @@ exports.listStories = async function (req, res, next) {
 
 exports.getStory = async function (req, res, next) {
   try {
-    const content = await getStory(
+    const story = await getStory(
       req.query.source,
       req.params.storySlug
     );
-    if (content === "") {
+    if (story === null) {
         throw new Error("Story not found")
     }
 
     res.status(200).json({
       status: "success",
-      data: content,
+      data: story,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "failed",
+      message: error.message,
+    });
+  }
+};
+
+exports.search = async function (req, res, next) {
+  try {
+    const stories = await search(
+      req.query.source,
+      req.body.searchString
+    );
+
+    if (stories.length === 0) {
+        throw new Error("Story not found")
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: stories,
     });
   } catch (error) {
     res.status(404).json({

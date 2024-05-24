@@ -83,7 +83,7 @@ exports.getStory = async function (source, storySlug) {
 
     const params = sourceConfig.getStory.params.join(", ");
 
-    const getContentFunc = new Function(
+    const getStoryFunc = new Function(
       "fetch",
       "JSDOM",
       `return async function(${params}){
@@ -91,10 +91,40 @@ exports.getStory = async function (source, storySlug) {
             }`
     )(fetch, JSDOM);
 
-    const result = await getContentFunc(storySlug);
+    const result = await getStoryFunc(storySlug);
     return result;
   } catch (error) {
     console.error("Error loading config:", error);
-    return "";
+    return null;
+  }
+};
+
+exports.search = async function (source, searchString) {
+  try {
+    const data = fs.readFileSync("./config/config.json", {
+      encoding: "utf-8",
+    });
+
+    const config = JSON.parse(data);
+    let sourceConfig = config.find((cfg) => cfg.source === source);
+    if (!sourceConfig) {
+      sourceConfig = config[0];
+    }
+
+    const params = sourceConfig.search.params.join(", ");
+
+    const searchFunc = new Function(
+      "fetch",
+      "JSDOM",
+      `return async function(${params}){
+                ${sourceConfig.search.handler}
+            }`
+    )(fetch, JSDOM);
+
+    const result = await searchFunc(searchString);
+    return result;
+  } catch (error) {
+    console.error("Error loading config:", error);
+    return [];
   }
 };
