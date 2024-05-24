@@ -20,19 +20,19 @@ export default function ChangeStyle({
     " bg-pink-100 ",
     " bg-slate-800 ",
   ];
-  const listFont = [" font-sans ", " font-serif ", " font-mono "];
+  const listFont = [" font-sans ", " font-serif ", " font-mono ", " font-palatino"];
   const listLeading = [
     {
       display: 1,
-      value: " leading-normal ",
+      value: " leading-[200%] ",
     },
     {
       display: 1.5,
-      value: " leading-relaxed ",
+      value: " leading-[250%] ",
     },
     {
       display: 2,
-      value: " leading-loose ",
+      value: " leading-[300%] ",
     },
   ];
 

@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        palatino: ["Palatino", "sans-serif"],
+      },
     },
   },
   plugins: [require("tw-elements-react/dist/plugin.cjs")],
