@@ -156,3 +156,33 @@ exports.listCategories = async function (source) {
     return [];
   }
 };
+
+exports.listStoriesByCategory = async function (source, categorySlug) {
+  try {
+    const data = fs.readFileSync("./config/config.json", {
+      encoding: "utf-8",
+    });
+
+    const config = JSON.parse(data);
+    let sourceConfig = config.find((cfg) => cfg.source === source);
+    if (!sourceConfig) {
+      sourceConfig = config[0];
+    }
+
+    const params = sourceConfig.category.getStories.params.join(", ");
+
+    const listCategoriesFunc = new Function(
+      "fetch",
+      "JSDOM",
+      `return async function(${params}){
+                ${sourceConfig.category.getStories.handler}
+            }`
+    )(fetch, JSDOM);
+
+    const result = await listCategoriesFunc(categorySlug);
+    return result;
+  } catch (error) {
+    console.error("Error loading config:", error);
+    return [];
+  }
+};
