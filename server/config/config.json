@@ -1,7 +1,8 @@
 [{
+    "source": "truyenfull.vn",
     "getContent": {
-      "params": ["chapter"],
-      "handler": "let url = `https://truyenfull.vn/tu-cam-270192/chuong-${chapter}/`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let rawContent = document.getElementById('chapter-c').getElementsByTagName('p'); let content = ''; for (let i = 0; i < rawContent.length; i += 2) { content += rawContent[i].textContent + '\\n'; } return content;"
+      "params": ["source", "storySlug", "chapter"],
+      "handler": "let url = `https://${source}/${storySlug}/chuong-${chapter}/`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let rawContent = document.getElementById('chapter-c').getElementsByTagName('p'); let content = ''; for (let i = 0; i < rawContent.length; i += 2) { content += rawContent[i].textContent + '\\n'; } return content;"
     }
   }
 ]
