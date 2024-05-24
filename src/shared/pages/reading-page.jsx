@@ -73,7 +73,7 @@ export default function ReadingPage() {
     };
   
     // Run handleScroll every 30sec
-    const intervalId = setInterval(handleScroll, 30000);
+    const intervalId = setInterval(handleScroll, 10000);
   
     // Cleanup function to clear the interval when the component unmounts
     return () => {
