@@ -16,7 +16,9 @@ export default function Content({
       }
       id="story-content"
     >
-      {content}
+      {content.split('\n\n').map((item, key) => {
+        return <span key={key}>{item}<br /><br /></span>
+      })}
     </div>
   );
 }

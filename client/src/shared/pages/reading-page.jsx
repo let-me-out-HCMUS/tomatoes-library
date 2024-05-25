@@ -101,6 +101,7 @@ export default function ReadingPage() {
           window.scrollTo(0, scrollY);
         });
         // console.log(resChap, resStory)
+        console.log(resChap.data)
       } catch (error) {
         console.error(error);
       }
