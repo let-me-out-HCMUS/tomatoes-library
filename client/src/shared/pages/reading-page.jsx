@@ -5,8 +5,10 @@ import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
 import Content from "../../features/ReadingPage/components/Content";
 import { data } from "../../assets/reading-page-mock";
 import { jsPDF } from "jspdf";
+import { getStories, getChapter, getStory } from "../../api/story";
 
 export default function ReadingPage() {
+  // handle style text
   const [color, setColor] = useState(
     localStorage.getItem("color") || " text-blue-500 "
   );
@@ -24,7 +26,9 @@ export default function ReadingPage() {
     localStorage.getItem("textAlign") || " text-left "
   );
   const [open, setOpen] = useState(false);
+  //
 
+  // feat export to pdf
   const exportToPDF = () => {
     const doc = new jsPDF();
     const storyContent = document.getElementById("story-content").textContent;
@@ -66,9 +70,10 @@ export default function ReadingPage() {
   //   };
   // }, [data.title, data.chapter]); 
 
+  // store current scroll position
   useEffect(() => {
     const handleScroll = () => {
-      console.log(window.scrollY);
+      // console.log(window.scrollY);
       localStorage.setItem(`${data.title}-${data.chapter}`, window.scrollY);
     };
   
@@ -81,28 +86,51 @@ export default function ReadingPage() {
     };
   }, [data.title, data.chapter]);
 
+  // restore scroll position
+  // useEffect(() => {
+  //   const scrollY = localStorage.getItem(`${data.title}-${data.chapter}`);
+  //   window.scrollTo(0, scrollY);
+  // }, []);
+
+  const [chapterContent, setChapterContent] = useState("");
+  const [story, setStory] = useState({});
+
   useEffect(() => {
-    const scrollY = localStorage.getItem(`${data.title}-${data.chapter}`);
-    window.scrollTo(0, scrollY);
+    async function fetchData() {
+      try {
+        let resChap = await getChapter(data.title, data.chapter)
+        let resStory = await getStory(data.title)
+        // setChapterContent(resChap.data);
+        // setStory(resStory.data);
+        Promise.all([resChap, resStory]).then((values) => {
+          setChapterContent(values[0].data);
+          setStory(values[1].data);
+          const scrollY = localStorage.getItem(`${data.title}-${data.chapter}`);
+          window.scrollTo(0, scrollY);
+        });
+        // console.log(resChap, resStory)
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+    
   }, []);
 
   return (
-    <div className=" relative h-full" onScroll={() =>{
-      console.log(window.scrollY)
-     localStorage.setItem(`${data.title}-${data.chapter}`, window.scrollY)}
-    }>
+    <div className=" relative h-full">
       <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
-        <h1 className=" text-4xl mb-2">{data.title}</h1>
-        <h2 className=" text-xl">{data.chapter}</h2>
-        <h3 className=" mb-4">Độ dài: 1000 từ</h3>
-        <select className=" mb-2" name="" id="" defaultValue={data.activeServer}>
+        <h1 className=" font-bold text-2xl mt-8 mb-2 px-10 text-center">{story?.name}</h1>
+        <h2 className=" text-xl">Chap: {data.chapter}</h2>
+        <h3 className=" mb-4">Độ dài: {chapterContent?.length} từ</h3>
+        <select className=" mb-2 text-black border-solid border-2" name="" id="" defaultValue={data.activeServer}>
           {data.server.map((item) => (
             <option key={item} value={item}>
               {item}
             </option>
           ))}
         </select>
-        <select name="" id="" className=" w-10/12" defaultValue={data.chapter}>
+        <select name="" id="" className=" w-10/12 text-black border-solid border-2" defaultValue={data.chapter}>
           {data.list.reverse().map((item) => (
             <option key={item} value={item}>
               {item}
@@ -111,6 +139,7 @@ export default function ReadingPage() {
         </select>
       </div>
       <Content
+      content={chapterContent}
         fontSize={fontSize}
         color={color}
         leading={leading}
@@ -143,12 +172,6 @@ export default function ReadingPage() {
           ⇓
         </button>
       </div>
-
-      {/* <button
-        className=" fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 p-2 text-2xl bg-white"
-        onClick={() => setOpen(true)}>
-        🖌
-      </button> */}
 
       <CustomDialog
         open={open}
