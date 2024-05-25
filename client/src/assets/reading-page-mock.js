@@ -1,7 +1,7 @@
 
 export const data = {
-    "title": "ReadingPage",
-    "chapter": "Chapter 2 - Middle",
+    "title": "cac-nguoi-tu-tien-ta-lam-ruong",
+    "chapter": "1",
     "list": [
         "Chapter 1 - Begin",
         "Chapter 2 - Middle",

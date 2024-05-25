@@ -1,11 +1,16 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ReadingPage from "./shared/pages/reading-page";
 function App() {
 
   return (
-    <>
-      {/* <div>123</div> */}
-      <ReadingPage />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="stories/:slug/">
+          <Route path=":chapter" element={<ReadingPage />}></Route>
+        </Route>
+      </Routes>
+      
+    </BrowserRouter> 
   );
 }
 
