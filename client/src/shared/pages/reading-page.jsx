@@ -1,13 +1,16 @@
 // import { TextField } from "@mui/material";
-import { useState, useRef,useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import CustomDialog from "../../features/ReadingPage/components/Dialog";
 import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
 import Content from "../../features/ReadingPage/components/Content";
 import { data } from "../../assets/reading-page-mock";
 import { jsPDF } from "jspdf";
 import { getStories, getChapter, getStory } from "../../api/story";
+import { useParams } from "react-router-dom";
 
 export default function ReadingPage() {
+  const { slug, chapter } = useParams();
+  console.log(slug, chapter);
   // handle style text
   const [color, setColor] = useState(
     localStorage.getItem("color") || " text-blue-500 "
@@ -56,39 +59,25 @@ export default function ReadingPage() {
     doc.save("Story.pdf");
   };
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     console.log(window.scrollY);
-  //     localStorage.setItem(`${data.title}-${data.chapter}`, window.scrollY);
-  //   };
-  
-  //   window.addEventListener('scroll', handleScroll);
-  
-  //   // Cleanup function to remove the event listener when the component unmounts
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //   };
-  // }, [data.title, data.chapter]); 
-
   // store current scroll position
   useEffect(() => {
     const handleScroll = () => {
       // console.log(window.scrollY);
-      localStorage.setItem(`${data.title}-${data.chapter}`, window.scrollY);
+      localStorage.setItem(`${slug}-${chapter}`, window.scrollY);
     };
-  
+
     // Run handleScroll every 30sec
     const intervalId = setInterval(handleScroll, 10000);
-  
+
     // Cleanup function to clear the interval when the component unmounts
     return () => {
       clearInterval(intervalId);
     };
-  }, [data.title, data.chapter]);
+  }, [slug, chapter]);
 
   // restore scroll position
   // useEffect(() => {
-  //   const scrollY = localStorage.getItem(`${data.title}-${data.chapter}`);
+  //   const scrollY = localStorage.getItem(`${slug}-${chapter}`);
   //   window.scrollTo(0, scrollY);
   // }, []);
 
@@ -98,14 +87,15 @@ export default function ReadingPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        let resChap = await getChapter(data.title, data.chapter)
-        let resStory = await getStory(data.title)
+        let resChap = await getChapter(slug, chapter);
+        let resStory = await getStory(slug);
         // setChapterContent(resChap.data);
         // setStory(resStory.data);
         Promise.all([resChap, resStory]).then((values) => {
           setChapterContent(values[0].data);
           setStory(values[1].data);
-          const scrollY = localStorage.getItem(`${data.title}-${data.chapter}`);
+
+          const scrollY = localStorage.getItem(`${slug}-${chapter}`);
           window.scrollTo(0, scrollY);
         });
         // console.log(resChap, resStory)
@@ -114,32 +104,43 @@ export default function ReadingPage() {
       }
     }
     fetchData();
-    
   }, []);
 
   return (
     <div className=" relative h-full">
       <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
-        <h1 className=" font-bold text-2xl mt-8 mb-2 px-10 text-center">{story?.name}</h1>
-        <h2 className=" text-xl">Chap: {data.chapter}</h2>
+        <h1 className=" font-bold text-2xl mt-8 mb-2 px-10 text-center">
+          {story?.name}
+        </h1>
+        <h2 className=" text-xl">Chap: {chapter}</h2>
         <h3 className=" mb-4">Độ dài: {chapterContent?.length} từ</h3>
-        <select className=" mb-2 text-black border-solid border-2" name="" id="" defaultValue={data.activeServer}>
+        <select
+          className=" mb-2 text-black border-solid border-2"
+          name=""
+          id=""
+          defaultValue={data.activeServer}>
           {data.server.map((item) => (
             <option key={item} value={item}>
               {item}
             </option>
           ))}
         </select>
-        <select name="" id="" className=" w-10/12 text-black border-solid border-2" defaultValue={data.chapter}>
-          {data.list.reverse().map((item) => (
-            <option key={item} value={item}>
-              {item}
+        <select
+          name=""
+          id=""
+          className=" w-10/12 text-black border-solid border-2"
+          value={chapter}
+          // onChange={(e) => setChapter(e.target.value)}
+        >
+          {Array.from({ length: story?.totalChapter }, (_, i) => (
+            <option key={i + 1} value={i + 1}>
+              Chapter {i + 1}
             </option>
-          ))}
+          )).reverse()}
         </select>
       </div>
       <Content
-      content={chapterContent}
+        content={chapterContent}
         fontSize={fontSize}
         color={color}
         leading={leading}
