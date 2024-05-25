@@ -5,12 +5,14 @@ import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
 import Content from "../../features/ReadingPage/components/Content";
 import { data } from "../../assets/reading-page-mock";
 import { jsPDF } from "jspdf";
-import { getStories, getChapter, getStory } from "../../api/story";
-import { useParams } from "react-router-dom";
+import { getChapter, getStory } from "../../api/story";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function ReadingPage() {
   const { slug, chapter } = useParams();
-  console.log(slug, chapter);
+  const navigate = useNavigate();
+  // console.log(slug, chapter);
+
   // handle style text
   const [color, setColor] = useState(
     localStorage.getItem("color") || " text-blue-500 "
@@ -106,6 +108,18 @@ export default function ReadingPage() {
     fetchData();
   }, []);
 
+  const fetchChapter = async (chapter) => {
+    try {
+      let res = await getChapter(slug, chapter);
+      setChapterContent(res.data);
+
+      window.scrollTo(0, 0);
+      navigate(`/stories/${slug}/${chapter}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className=" relative h-full">
       <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
@@ -131,7 +145,10 @@ export default function ReadingPage() {
           className=" w-10/12 text-black border-solid border-2"
           value={chapter}
           // onChange={(e) => setChapter(e.target.value)}
-        >
+          onChange={(e) => {
+            fetchChapter(e.target.value);
+            window.scrollTo(0, 0);
+          }}>
           {Array.from({ length: story?.totalChapter }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               Chapter {i + 1}
@@ -155,9 +172,17 @@ export default function ReadingPage() {
           onClick={() => window.scrollTo(0, 0)}>
           ▲
         </button>
-        <button className=" border-b-2 border-solid border-black py-2">
-          ≪
-        </button>
+        { chapter > 1 ? 
+          <button
+            className=" border-b-2 border-solid border-black py-2"
+            onClick={() => fetchChapter(parseInt(chapter) - 1)}>
+            ≪
+          </button>
+          :
+          <button className=" text-gray-200 border-b-2 border-solid border-black py-2 cursor-not-allowed">
+            ≪
+          </button>
+        }
         <button className=" border-b-2 border-solid border-black py-2">
           🏠
         </button>
@@ -166,9 +191,19 @@ export default function ReadingPage() {
           onClick={() => setOpen(true)}>
           🖌
         </button>
-        <button className=" border-b-2 border-solid border-black py-2">
-          ≫
-        </button>
+
+        {chapter < story?.totalChapter ? (
+          <button
+            className=" border-b-2 border-solid border-black py-2"
+            onClick={() => fetchChapter(parseInt(chapter) + 1)}>
+            ≫
+          </button>
+        ) : (
+          <button className=" text-gray-200 border-b-2 border-solid border-black py-2 cursor-not-allowed">
+            ≫
+          </button>
+        )}
+        {/* download btn */}
         <button className=" py-2" onClick={exportToPDF}>
           ⇓
         </button>

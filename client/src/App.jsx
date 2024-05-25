@@ -6,7 +6,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="stories/:slug/">
-          <Route path="content/:chapter" element={<ReadingPage />}></Route>
+          <Route path=":chapter" element={<ReadingPage />}></Route>
         </Route>
       </Routes>
       
