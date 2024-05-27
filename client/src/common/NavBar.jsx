@@ -7,6 +7,8 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import { Stack } from "@mui/material";
+import { BrowserRouter as Router, Link } from "react-router-dom";
+
 
 // Xem thêm: https://mui.com/material-ui/react-app-bar/
 export default function NavBar() {
@@ -26,7 +28,7 @@ export default function NavBar() {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
-            SAY GEX NOVEL
+            <Link to="/">SAY GEX NOVEL</Link>
           </Typography>
 
           <Stack>
