@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router";
 
-const Coffeeholic = () => {
+export default function StoryHolic() {
   const id = useParams().id;
   const local = data[id];
   return (
@@ -44,9 +44,7 @@ const Coffeeholic = () => {
       </p>
     </div>
   );
-};
-
-export default Coffeeholic;
+}
 
 const data = {
   1: {
