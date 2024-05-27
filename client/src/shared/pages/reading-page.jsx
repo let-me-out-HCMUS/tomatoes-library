@@ -39,15 +39,17 @@ export default function ReadingPage() {
 
   // feat export to pdf
   const exportToPDF = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF('p', 'mm', 'a4');
 
     // Set the active font
-    const storyContent = document.getElementById('story-content').textContent;
+    const storyContent = document.getElementById('story-content').innerText;
+    console.log(storyContent);
 
     doc.addFont(openSansFont, 'OpenSans', 'normal');
     doc.setFont('OpenSans');
+    doc.setFontSize(12);
+    const lines = doc.splitTextToSize(storyContent, 180); // Adjust the second argument as needed
 
-    const lines = doc.splitTextToSize(storyContent, 180);
     let y = 10; // start y position
 
     const pageHeight =
