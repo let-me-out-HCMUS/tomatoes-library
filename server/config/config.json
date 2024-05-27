@@ -21,8 +21,8 @@
         "handler": "let url = 'https://truyen.tangthuvien.vn/the-loai/canh-ky'; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.nav-list.site-nav.fl').querySelectorAll('a:not([class]):not([id])'); let categories = []; for (let i = 0; i < nodeList.length; i++) { categories.push(nodeList[i].innerHTML); } return categories;"
       },
       "getStories": {
-          "params": ["categorySlug"],
-          "handler": "let url = `https://truyen.tangthuvien.vn/the-loai/${categorySlug}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.update-table.all').querySelectorAll('tr'); let stories = []; for (let i = 0; i < nodeList.length; i++) { const td = nodeList[i].querySelectorAll('a'); stories.push({ name: td[1].innerHTML, category: td[0].innerHTML, totalChapter: parseInt(td[2].innerHTML.split(' ')[1], 10), author: td[3].innerHTML }); } return stories;"
+        "params": ["categorySlug"],
+        "handler": "let url = `https://truyen.tangthuvien.vn/the-loai/${categorySlug}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.update-table.all').querySelectorAll('tr'); let stories = []; for (let i = 0; i < nodeList.length; i++) { const td = nodeList[i].querySelectorAll('a'); stories.push({ name: td[1].innerHTML, category: td[0].innerHTML, totalChapter: parseInt(td[2].innerHTML.split(' ')[1], 10), author: td[3].innerHTML }); } return stories;"
       }
     }
   }

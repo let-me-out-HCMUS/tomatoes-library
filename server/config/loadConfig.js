@@ -39,10 +39,10 @@ exports.listStories = async function () {
     });
 
     const config = JSON.parse(data);
-    const totalStories = []
-    for (let i = 0; i < config.length; i++){
-      sourceConfig = config[i]
-  
+    const totalStories = [];
+    for (let i = 0; i < config.length; i++) {
+      sourceConfig = config[i];
+
       const listStoriesFunc = new Function(
         "fetch",
         "JSDOM",
@@ -50,14 +50,19 @@ exports.listStories = async function () {
                   ${sourceConfig.listStories.handler}
               }`
       )(fetch, JSDOM);
-  
+
       const result = await listStoriesFunc();
-      for (let j = 0; j < result.length; j++){
-        const idx = totalStories.findIndex(story => story.name === result[j].name)
-        if (idx === -1){
-          totalStories.push(result[j])
+      for (let j = 0; j < result.length; j++) {
+        const idx = totalStories.findIndex(
+          (story) => story.name === result[j].name
+        );
+        if (idx === -1) {
+          totalStories.push(result[j]);
         } else {
-          totalStories[idx].totalChapter = Math.max(totalStories[idx].totalChapter, result[j].totalChapter)
+          totalStories[idx].totalChapter = Math.max(
+            totalStories[idx].totalChapter,
+            result[j].totalChapter
+          );
         }
       }
     }
@@ -69,33 +74,40 @@ exports.listStories = async function () {
   }
 };
 
-exports.getStory = async function (source, storySlug) {
+exports.getStory = async function (storySlug) {
   try {
     const data = fs.readFileSync("./config/config.json", {
       encoding: "utf-8",
     });
 
     const config = JSON.parse(data);
-    let sourceConfig = config.find((cfg) => cfg.source === source);
-    if (!sourceConfig) {
-      sourceConfig = config[0];
+    const totalSource = [];
+    let returnStory = {};
+    for (let i = 0; i < config.length; i++) {
+      sourceConfig = config[i];
+
+      const params = sourceConfig.getStory.params.join(", ");
+
+      const getStoryFunc = new Function(
+        "fetch",
+        "JSDOM",
+        `return async function(${params}){
+                  ${sourceConfig.getStory.handler}
+              }`
+      )(fetch, JSDOM);
+
+      const storyDetail = await getStoryFunc(storySlug);
+      if (storyDetail != null) {
+        returnStory = storyDetail;
+        totalSource.push(sourceConfig.source);
+      }
     }
 
-    const params = sourceConfig.getStory.params.join(", ");
-
-    const getStoryFunc = new Function(
-      "fetch",
-      "JSDOM",
-      `return async function(${params}){
-                ${sourceConfig.getStory.handler}
-            }`
-    )(fetch, JSDOM);
-
-    const result = await getStoryFunc(storySlug);
-    return result;
+    returnStory.source = totalSource;
+    return returnStory;
   } catch (error) {
     console.error("Error loading config:", error);
-    return null;
+    return {};
   }
 };
 
