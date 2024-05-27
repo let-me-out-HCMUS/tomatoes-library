@@ -131,9 +131,8 @@ export default function ReadingPage() {
         <h1 className=" font-bold text-2xl mt-8 mb-2 px-10 text-center">
           {story?.name}
         </h1>
-        <h2 className=" text-xl">Chap: {chapter}</h2>
         <h3 className=" mb-4">
-          Độ dài: {chapterContent?.split(" ").length} từ
+          Total words: {chapterContent?.split(" ").length}
         </h3>
         <select
           className=" mb-2 text-black border-solid border-2"
