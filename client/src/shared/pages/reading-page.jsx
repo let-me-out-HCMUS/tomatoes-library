@@ -1,14 +1,14 @@
 // import { TextField } from "@mui/material";
-import { useState, useEffect } from "react";
-import { jsPDF } from "jspdf";
-import { getChapter, getStory } from "../../api/story";
-import { useParams, useNavigate } from "react-router-dom";
-
-import CustomDialog from "../../features/ReadingPage/components/Dialog";
-import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
-import Content from "../../features/ReadingPage/components/Content";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useState, useEffect } from 'react';
+import { jsPDF } from 'jspdf';
+import { getChapter, getStory } from '../../api/story';
+import { useParams, useNavigate } from 'react-router-dom';
+import openSansFont from '../../assets/fonts/OpenSans-Regular.ttf';
+import CustomDialog from '../../features/ReadingPage/components/Dialog';
+import ChangeStyle from '../../features/ReadingPage/components/ChangeStyle';
+import Content from '../../features/ReadingPage/components/Content';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function ReadingPage() {
   const { slug, chapter } = useParams();
@@ -19,20 +19,20 @@ export default function ReadingPage() {
 
   // handle style text
   const [color, setColor] = useState(
-    localStorage.getItem("color") || " text-blue-500 "
+    localStorage.getItem('color') || ' text-blue-500 '
   );
   const [bgColor, setBgColor] = useState(
-    localStorage.getItem("bgColor") || " bg-yellow-100 "
+    localStorage.getItem('bgColor') || ' bg-yellow-100 '
   );
   const [fontSize, setFontSize] = useState(
-    localStorage.getItem("fontSize") || 16
+    localStorage.getItem('fontSize') || 16
   );
   const [fontFamily, setFontFamily] = useState(
-    localStorage.getItem("fontFamily") || " font-sans "
+    localStorage.getItem('fontFamily') || ' font-sans '
   );
-  const [leading, setLeading] = useState(localStorage.getItem("leading") || "");
+  const [leading, setLeading] = useState(localStorage.getItem('leading') || '');
   const [textAlign, setTextAlign] = useState(
-    localStorage.getItem("textAlign") || " text-left "
+    localStorage.getItem('textAlign') || ' text-left '
   );
   const [open, setOpen] = useState(false);
   //
@@ -40,12 +40,13 @@ export default function ReadingPage() {
   // feat export to pdf
   const exportToPDF = () => {
     const doc = new jsPDF();
-    const storyContent = document.getElementById("story-content").textContent;
 
-    // console.log(storyContent);
+    // Set the active font
+    const storyContent = document.getElementById('story-content').textContent;
 
-    doc.setFont("helvetica"); // set font
-    doc.setFontSize(12); // set font size
+    doc.addFont(openSansFont, 'OpenSans', 'normal');
+    doc.setFont('OpenSans');
+
     const lines = doc.splitTextToSize(storyContent, 180);
     let y = 10; // start y position
 
@@ -62,7 +63,7 @@ export default function ReadingPage() {
       y += 10; // move y down for next line
     }
 
-    doc.save("Story.pdf");
+    doc.save('Story.pdf');
   };
 
   // store current scroll position
@@ -82,7 +83,7 @@ export default function ReadingPage() {
   }, [slug, chapter]);
 
   // fetch data
-  const [chapterContent, setChapterContent] = useState("");
+  const [chapterContent, setChapterContent] = useState('');
   const [story, setStory] = useState({});
   const [server, setServer] = useState(1);
 
@@ -133,14 +134,15 @@ export default function ReadingPage() {
         </h1>
         <h2 className=" text-xl">Chap: {chapter}</h2>
         <h3 className=" mb-4">
-          Độ dài: {chapterContent?.split(" ").length} từ
+          Độ dài: {chapterContent?.split(' ').length} từ
         </h3>
         <select
           className=" mb-2 text-black border-solid border-2"
           name=""
           id=""
           value={server}
-          onChange={(e) => fetchChapter(chapter, e.target.value)}>
+          onChange={(e) => fetchChapter(chapter, e.target.value)}
+        >
           {/* {data.server.map((item) => (
             <option key={item} value={item}>
               {item}
@@ -161,7 +163,8 @@ export default function ReadingPage() {
           onChange={(e) => {
             fetchChapter(e.target.value, server);
             window.scrollTo(0, 0);
-          }}>
+          }}
+        >
           {Array.from({ length: story?.totalChapter }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               Chapter {i + 1}
@@ -171,9 +174,9 @@ export default function ReadingPage() {
       </div>
 
       <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isLoading}
-        >
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
 
@@ -190,13 +193,15 @@ export default function ReadingPage() {
       <div className=" flex flex-col fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 p-2 text-2xl bg-white">
         <button
           className=" border-b-2 border-solid border-black py-2"
-          onClick={() => window.scrollTo(0, 0)}>
+          onClick={() => window.scrollTo(0, 0)}
+        >
           ▲
         </button>
         {chapter > 1 ? (
           <button
             className=" border-b-2 border-solid border-black py-2"
-            onClick={() => fetchChapter(parseInt(chapter) - 1)}>
+            onClick={() => fetchChapter(parseInt(chapter) - 1)}
+          >
             ≪
           </button>
         ) : (
@@ -209,14 +214,16 @@ export default function ReadingPage() {
         </button>
         <button
           className=" border-b-2 border-solid border-black py-2"
-          onClick={() => setOpen(true)}>
+          onClick={() => setOpen(true)}
+        >
           🖌
         </button>
 
         {chapter < story?.totalChapter ? (
           <button
             className=" border-b-2 border-solid border-black py-2"
-            onClick={() => fetchChapter(parseInt(chapter) + 1)}>
+            onClick={() => fetchChapter(parseInt(chapter) + 1)}
+          >
             ≫
           </button>
         ) : (
@@ -233,7 +240,8 @@ export default function ReadingPage() {
       <CustomDialog
         open={open}
         title="Tuỳ chỉnh"
-        onClose={() => setOpen(false)}>
+        onClose={() => setOpen(false)}
+      >
         <ChangeStyle
           fontSize={fontSize}
           setColor={setColor}
