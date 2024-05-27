@@ -13,16 +13,26 @@ import CircularProgress from "@mui/material/CircularProgress";
 export default function ReadingPage() {
   const { slug, chapter } = useParams();
   const navigate = useNavigate();
+
+  let listChap = JSON.parse(localStorage.getItem(`${slug}`)) || [];
+  if (!listChap.includes(chapter))
+  {
+    listChap.push(chapter);
+    listChap.sort((a, b) => a - b);
+    localStorage.setItem(`${slug}`, JSON.stringify(listChap));
+  }
+
+
   const [isLoading, setIsLoading] = useState(true);
 
   // console.log(slug, chapter);
 
   // handle style text
   const [color, setColor] = useState(
-    localStorage.getItem("color") || " text-blue-500 "
+    localStorage.getItem("color") || "  "
   );
   const [bgColor, setBgColor] = useState(
-    localStorage.getItem("bgColor") || " bg-yellow-100 "
+    localStorage.getItem("bgColor") || "  "
   );
   const [fontSize, setFontSize] = useState(
     localStorage.getItem("fontSize") || 16
@@ -30,7 +40,7 @@ export default function ReadingPage() {
   const [fontFamily, setFontFamily] = useState(
     localStorage.getItem("fontFamily") || " font-sans "
   );
-  const [leading, setLeading] = useState(localStorage.getItem("leading") || "");
+  const [leading, setLeading] = useState(localStorage.getItem("leading") || " leading-[200%] ");
   const [textAlign, setTextAlign] = useState(
     localStorage.getItem("textAlign") || " text-left "
   );
