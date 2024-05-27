@@ -18,9 +18,9 @@ export const getStory = async (name) => {
     }
 }
 
-export const getChapter = async (name, chapter) => {
+export const getChapter = async (name, chapter, server) => {
     try {
-        const response = await axiosClient.get(`/stories/${name}/content/${chapter}`);
+        const response = await axiosClient.get(`/stories/${name}/content/${chapter}?source=${server}`);
         return response;
     } catch (error) {
         console.error(error);

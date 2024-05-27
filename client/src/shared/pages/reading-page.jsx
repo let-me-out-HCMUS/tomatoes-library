@@ -1,16 +1,20 @@
 // import { TextField } from "@mui/material";
-import { useState, useRef, useEffect } from "react";
-import CustomDialog from "../../features/ReadingPage/components/Dialog";
-import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
-import Content from "../../features/ReadingPage/components/Content";
-import { data } from "../../assets/reading-page-mock";
+import { useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import { getChapter, getStory } from "../../api/story";
 import { useParams, useNavigate } from "react-router-dom";
 
+import CustomDialog from "../../features/ReadingPage/components/Dialog";
+import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
+import Content from "../../features/ReadingPage/components/Content";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+
 export default function ReadingPage() {
   const { slug, chapter } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
   // console.log(slug, chapter);
 
   // handle style text
@@ -38,7 +42,7 @@ export default function ReadingPage() {
     const doc = new jsPDF();
     const storyContent = document.getElementById("story-content").textContent;
 
-    console.log(storyContent);
+    // console.log(storyContent);
 
     doc.setFont("helvetica"); // set font
     doc.setFontSize(12); // set font size
@@ -77,14 +81,10 @@ export default function ReadingPage() {
     };
   }, [slug, chapter]);
 
-  // restore scroll position
-  // useEffect(() => {
-  //   const scrollY = localStorage.getItem(`${slug}-${chapter}`);
-  //   window.scrollTo(0, scrollY);
-  // }, []);
-
+  // fetch data
   const [chapterContent, setChapterContent] = useState("");
   const [story, setStory] = useState({});
+  const [server, setServer] = useState(1);
 
   useEffect(() => {
     async function fetchData() {
@@ -94,14 +94,13 @@ export default function ReadingPage() {
         // setChapterContent(resChap.data);
         // setStory(resStory.data);
         Promise.all([resChap, resStory]).then((values) => {
-          setChapterContent(values[0].data);
-          setStory(values[1].data);
-
+          setChapterContent(values[0]?.data);
+          setStory(values[1]?.data);
+          setIsLoading(false);
           const scrollY = localStorage.getItem(`${slug}-${chapter}`);
           window.scrollTo(0, scrollY);
         });
         // console.log(resChap, resStory)
-        console.log(resChap.data)
       } catch (error) {
         console.error(error);
       }
@@ -109,16 +108,21 @@ export default function ReadingPage() {
     fetchData();
   }, []);
 
-  const fetchChapter = async (chapter) => {
-    try {
-      let res = await getChapter(slug, chapter);
-      setChapterContent(res.data);
-
-      window.scrollTo(0, 0);
-      navigate(`/stories/${slug}/${chapter}`);
-    } catch (error) {
-      console.error(error);
+  const fetchChapter = async (chapter, server) => {
+    setIsLoading(true);
+    async function fetchData() {
+      try {
+        let res = await getChapter(slug, chapter, story?.source[server - 1]);
+        setChapterContent(res.data);
+        setServer(server);
+        window.scrollTo(0, 0);
+        navigate(`/stories/${slug}/${chapter}`);
+      } catch (error) {
+        console.error(error);
+      }
     }
+    await fetchData();
+    setIsLoading(false);
   };
 
   return (
@@ -128,26 +132,34 @@ export default function ReadingPage() {
           {story?.name}
         </h1>
         <h2 className=" text-xl">Chap: {chapter}</h2>
-        <h3 className=" mb-4">Độ dài: {chapterContent?.length} từ</h3>
+        <h3 className=" mb-4">
+          Độ dài: {chapterContent?.split(" ").length} từ
+        </h3>
         <select
           className=" mb-2 text-black border-solid border-2"
           name=""
           id=""
-          defaultValue={data.activeServer}>
-          {data.server.map((item) => (
+          value={server}
+          onChange={(e) => fetchChapter(chapter, e.target.value)}>
+          {/* {data.server.map((item) => (
             <option key={item} value={item}>
               {item}
+            </option>
+          ))} */}
+          {story?.source?.map((item, idx) => (
+            <option key={item} value={idx}>
+              Server {idx + 1}
             </option>
           ))}
         </select>
         <select
           name=""
           id=""
-          className=" w-10/12 text-black border-solid border-2"
+          className=" text-black border-solid border-2"
           value={chapter}
           // onChange={(e) => setChapter(e.target.value)}
           onChange={(e) => {
-            fetchChapter(e.target.value);
+            fetchChapter(e.target.value, server);
             window.scrollTo(0, 0);
           }}>
           {Array.from({ length: story?.totalChapter }, (_, i) => (
@@ -157,6 +169,14 @@ export default function ReadingPage() {
           )).reverse()}
         </select>
       </div>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+        >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       <Content
         content={chapterContent}
         fontSize={fontSize}
@@ -173,17 +193,17 @@ export default function ReadingPage() {
           onClick={() => window.scrollTo(0, 0)}>
           ▲
         </button>
-        { chapter > 1 ? 
+        {chapter > 1 ? (
           <button
             className=" border-b-2 border-solid border-black py-2"
             onClick={() => fetchChapter(parseInt(chapter) - 1)}>
             ≪
           </button>
-          :
+        ) : (
           <button className=" text-gray-200 border-b-2 border-solid border-black py-2 cursor-not-allowed">
             ≪
           </button>
-        }
+        )}
         <button className=" border-b-2 border-solid border-black py-2">
           🏠
         </button>

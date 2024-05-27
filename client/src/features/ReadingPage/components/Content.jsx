@@ -8,6 +8,13 @@ export default function Content({
   fontFamily,
   textAlign,
 }) {
+  if (!content) {
+    return (
+      <div className="text-center text-2xl text-gray-400 p-8">
+        This chapter isn't available. Please try another server or wait for the server to update.
+      </div>
+    );
+  }
   return (
     <div
       style={{ fontSize: `${fontSize}px` }}
