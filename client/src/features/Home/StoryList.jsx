@@ -14,6 +14,8 @@ export default function StoryList() {
     };
 
     getData();
+
+    console.log(stories);
   }, []);
 
   return (

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ReadingPage from "./shared/pages/reading-page";
 import Home from "./shared/pages/Home";
 import AppLayout from "./common/AppLayout";
+import StoryHolic from "./features/Storyholic/StoryHolic";
 
 export default function App() {
   return (
@@ -12,6 +13,8 @@ export default function App() {
           <Route path="stories/:slug/">
             <Route path=":chapter" element={<ReadingPage />}></Route>
           </Route>
+
+          <Route path="storyholic/:id" element={<StoryHolic />} />
         </Route>
       </Routes>
     </BrowserRouter>
