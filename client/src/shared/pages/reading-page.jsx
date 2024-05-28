@@ -204,40 +204,40 @@ export default function ReadingPage() {
         textAlign={textAlign}
       />
 
-      <div className=" flex flex-col fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 p-2 text-2xl bg-white">
+      <div className=" flex flex-col fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 border-opacity-20 p-2 text-2xl bg-white">
         <button
-          className=" border-b-2 border-solid border-black border-opacity-30 py-2 self-center"
+          className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
           onClick={() => window.scrollTo(0, 0)}>
           <AiFillCaretUp />
         </button>
         {chapter > 1 ? (
           <button
-            className=" border-b-2 border-solid border-black border-opacity-30 py-2"
+            className=" border-b-2 border-solid border-black border-opacity-20 py-2"
             onClick={() => fetchChapter(parseInt(chapter) - 1)}>
             <AiOutlineLeft />
           </button>
         ) : (
-          <button className=" text-gray-200 border-b-2 border-solid border-black border-opacity-30 py-2 cursor-not-allowed">
+          <button className=" text-gray-200 border-b-2 border-solid border-black border-opacity-20 py-2 cursor-not-allowed">
             <AiOutlineLeft />
           </button>
         )}
-        <button className=" border-b-2 border-solid border-black border-opacity-30 py-2 self-center">
+        <button className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center">
           <AiFillHome />
         </button>
         <button
-          className=" border-b-2 border-solid border-black border-opacity-30 py-2 self-center"
+          className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
           onClick={() => setOpen(true)}>
           <AiFillEdit />
         </button>
 
         {chapter < story?.totalChapter ? (
           <button
-            className=" border-b-2 border-solid border-black border-opacity-30 py-2 self-center"
+            className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
             onClick={() => fetchChapter(parseInt(chapter) + 1)}>
             <AiOutlineRight />
           </button>
         ) : (
-          <button className=" text-gray-200 border-b-2 border-solid border-black border-opacity-30 py-2 cursor-not-allowed self-center">
+          <button className=" text-gray-200 border-b-2 border-solid border-black border-opacity-20 py-2 cursor-not-allowed self-center">
             <AiOutlineRight />
           </button>
         )}

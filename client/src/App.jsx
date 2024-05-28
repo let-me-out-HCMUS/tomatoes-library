@@ -11,6 +11,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />}></Route>
           <Route path="stories/:slug/">
+            {/* <Route path="/" element={<ReadingPage />}></Route> */}
             <Route path=":chapter" element={<ReadingPage />}></Route>
           </Route>
 
