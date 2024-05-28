@@ -1,6 +1,5 @@
 import React from "react";
 import Story from "../../features/StoryPage/components/Story";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router-dom";
 import { getStory } from "../../api/story";
 

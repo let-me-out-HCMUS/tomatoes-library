@@ -16,7 +16,7 @@ export default function ReadingPage() {
   const { slug, chapter } = useParams();
   const navigate = useNavigate();
 
-  let listChap = JSON.parse(localStorage.getItem(`${slug}`)) || [];
+  let listChap = JSON.parse(localStorage.getItem(slug)) || [];
   if (!listChap.includes(chapter))
   {
     listChap.push(chapter);

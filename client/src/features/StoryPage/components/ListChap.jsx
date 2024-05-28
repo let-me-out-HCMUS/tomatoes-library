@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-
+import { getReadChap } from "../../../utils/localStorage";
 export default function ListChapter({ totalChapter }) {
   const { slug } = useParams();
   let navigate = useNavigate();
+  const listReadChap = getReadChap(slug).map((item) => parseInt(item));
+  console.log(listReadChap);
 
   return (
     <div>
@@ -27,7 +29,13 @@ export default function ListChapter({ totalChapter }) {
               console.log(`/story/${slug}/${i + 1}`);
               navigate(`/story/${slug}/${i + 1}`);
             }}>
-            {i + 1}
+            {listReadChap.includes(i + 1) ? (
+              <span className=" text-gray-400">{i + 1}</span>
+            ) : (
+              <span>{i + 1}</span>
+            
+            )}
+            
           </button>
         ))}
       </div>

@@ -3,11 +3,14 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineBars } from "react-icons/ai";
 import ListChapter from "./ListChap";
+import { getReadChap } from "../../../utils/localStorage";
 
 const Story = ({ storyData }) => {
   const { slug } = useParams();
   const story = storyData;
   let navigate = useNavigate();
+  
+
   const [selectedTopping, setSelectedTopping] = React.useState([]);
   const [openList, setOpenList] = React.useState(false);
   // const [selectedSize, setSelectedSize] = React.useState(storyData.size[0])
