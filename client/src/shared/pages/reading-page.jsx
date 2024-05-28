@@ -10,19 +10,32 @@ import Content from '../../features/ReadingPage/components/Content';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { AiFillCaretUp, AiOutlineRight, AiOutlineLeft, AiOutlineVerticalAlignBottom, AiFillHome, AiFillEdit  } from "react-icons/ai";
+
 export default function ReadingPage() {
   const { slug, chapter } = useParams();
   const navigate = useNavigate();
+
+  let listChap = JSON.parse(localStorage.getItem(`${slug}`)) || [];
+  if (!listChap.includes(chapter))
+  {
+    listChap.push(chapter);
+    listChap.sort((a, b) => a - b);
+    localStorage.setItem(`${slug}`, JSON.stringify(listChap));
+  }
+
+
   const [isLoading, setIsLoading] = useState(true);
 
   // console.log(slug, chapter);
 
   // handle style text
   const [color, setColor] = useState(
-    localStorage.getItem('color') || ' text-blue-500 '
+    localStorage.getItem("color") || "  "
   );
   const [bgColor, setBgColor] = useState(
-    localStorage.getItem('bgColor') || ' bg-yellow-100 '
+    localStorage.getItem("bgColor") || "  "
+
   );
   const [fontSize, setFontSize] = useState(
     localStorage.getItem('fontSize') || 16
@@ -30,7 +43,7 @@ export default function ReadingPage() {
   const [fontFamily, setFontFamily] = useState(
     localStorage.getItem('fontFamily') || ' font-sans '
   );
-  const [leading, setLeading] = useState(localStorage.getItem('leading') || '');
+  const [leading, setLeading] = useState(localStorage.getItem("leading") || " leading-[200%] ");
   const [textAlign, setTextAlign] = useState(
     localStorage.getItem('textAlign') || ' text-left '
   );
@@ -134,9 +147,8 @@ export default function ReadingPage() {
         <h1 className=" font-bold text-2xl mt-8 mb-2 px-10 text-center">
           {story?.name}
         </h1>
-        <h2 className=" text-xl">Chap: {chapter}</h2>
         <h3 className=" mb-4">
-          Độ dài: {chapterContent?.split(' ').length} từ
+          Total words: {chapterContent?.split(" ").length}
         </h3>
         <select
           className=" mb-2 text-black border-solid border-2"
@@ -194,48 +206,44 @@ export default function ReadingPage() {
 
       <div className=" flex flex-col fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 p-2 text-2xl bg-white">
         <button
-          className=" border-b-2 border-solid border-black py-2"
-          onClick={() => window.scrollTo(0, 0)}
-        >
-          ▲
+          className=" border-b-2 border-solid border-black py-2 self-center"
+          onClick={() => window.scrollTo(0, 0)}>
+          <AiFillCaretUp />
         </button>
         {chapter > 1 ? (
           <button
             className=" border-b-2 border-solid border-black py-2"
-            onClick={() => fetchChapter(parseInt(chapter) - 1)}
-          >
-            ≪
+            onClick={() => fetchChapter(parseInt(chapter) - 1)}>
+            <AiOutlineLeft />
           </button>
         ) : (
           <button className=" text-gray-200 border-b-2 border-solid border-black py-2 cursor-not-allowed">
-            ≪
+            <AiOutlineLeft />
           </button>
         )}
-        <button className=" border-b-2 border-solid border-black py-2">
-          🏠
+        <button className=" border-b-2 border-solid border-black py-2 self-center">
+          <AiFillHome />
         </button>
         <button
-          className=" border-b-2 border-solid border-black py-2"
-          onClick={() => setOpen(true)}
-        >
-          🖌
+          className=" border-b-2 border-solid border-black py-2 self-center"
+          onClick={() => setOpen(true)}>
+          <AiFillEdit />
         </button>
 
         {chapter < story?.totalChapter ? (
           <button
-            className=" border-b-2 border-solid border-black py-2"
-            onClick={() => fetchChapter(parseInt(chapter) + 1)}
-          >
-            ≫
+            className=" border-b-2 border-solid border-black py-2 self-center"
+            onClick={() => fetchChapter(parseInt(chapter) + 1)}>
+            <AiOutlineRight />
           </button>
         ) : (
-          <button className=" text-gray-200 border-b-2 border-solid border-black py-2 cursor-not-allowed">
-            ≫
+          <button className=" text-gray-200 border-b-2 border-solid border-black py-2 cursor-not-allowed self-center">
+            <AiOutlineRight />
           </button>
         )}
         {/* download btn */}
-        <button className=" py-2" onClick={exportToPDF}>
-          ⇓
+        <button className=" py-2 self-center" onClick={exportToPDF}>
+         <AiOutlineVerticalAlignBottom/>
         </button>
       </div>
 
