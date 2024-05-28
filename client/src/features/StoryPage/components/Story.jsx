@@ -50,6 +50,10 @@ const Story = ({ storyData }) => {
             <span>{story.author}</span>
           </div>
           <div className="mt-4">
+            <span className="font-bold">Thể loại: </span>
+            <span>{story.category}</span>
+          </div>
+          <div className="mt-4">
             <span className="font-bold">Số chương: </span>
             <span>{story.totalChapter}</span>
           </div>
@@ -78,7 +82,7 @@ const Story = ({ storyData }) => {
               Đọc tiếp
             </button>
           </div>
-          <div className=" absolute bottom-0">
+          <div className=" mt-4">
             <button
               className=" flex flex-col"
               onClick={() => setOpenList(!openList)}>
