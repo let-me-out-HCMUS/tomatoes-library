@@ -1,7 +1,7 @@
 import StoryCard from "../../StoryCard/StoryCard";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AiOutlineBars } from "react-icons/ai";
+import { AiOutlineBars, AiOutlineHeart, AiOutlineStar, AiOutlineComment } from "react-icons/ai";
 import ListChapter from "./ListChap";
 import { getContinueChap } from "../../../utils/localStorage";
 
@@ -82,12 +82,30 @@ const Story = ({ storyData }) => {
               Đọc tiếp
             </button>
           </div>
-          <div className=" mt-4">
+          <div className=" mt-4 flex justify-around">
             <button
               className=" flex flex-col"
               onClick={() => setOpenList(!openList)}>
               <AiOutlineBars className=" text-4xl self-center" />
               <span>Mục lục</span>
+            </button>
+            <button
+              className=" flex flex-col hover:cursor-not-allowed"
+              >
+              <AiOutlineHeart className=" text-4xl self-center" />
+              <span>{Math.floor(Math.random() * (10000 - 10 + 1)) + 10}</span>
+            </button>
+            <button
+              className=" flex flex-col hover:cursor-not-allowed"
+              >
+              <AiOutlineStar className=" text-4xl self-center" />
+              <span>Đánh giá</span>
+            </button>
+            <button
+              className=" flex flex-col hover:cursor-not-allowed"
+              >
+              <AiOutlineComment className=" text-4xl self-center" />
+              <span>Bình luận</span>
             </button>
           </div>
         </div>
