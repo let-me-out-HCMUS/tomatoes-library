@@ -14,10 +14,10 @@ export default function ChangeStyle({
 }) {
   const listBgColor = [
     " bg-white ",
-    " bg-green-100 ",
-    " bg-cyan-100 ",
-    " bg-warning-100 ",
-    " bg-pink-100 ",
+    " bg-green-100 bg-opacity-65 ",
+    " bg-cyan-100 bg-opacity-65 ",
+    " bg-warning-100 bg-opacity-65 ",
+    " bg-pink-100 bg-opacity-65 ",
     " bg-slate-800 ",
   ];
   const listFont = [" font-sans ", " font-serif ", " font-mono ", " font-palatino"];

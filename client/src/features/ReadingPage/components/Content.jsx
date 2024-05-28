@@ -19,7 +19,7 @@ export default function Content({
     <div
       style={{ fontSize: `${fontSize}px` }}
       className={
-        `leading p-8 px-32` + color + leading + bgColor + fontFamily + textAlign
+        `leading p-8 px-32 ` + color + leading + bgColor + fontFamily + textAlign
       }
       id="story-content"
     >
