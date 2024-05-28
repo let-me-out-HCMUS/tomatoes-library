@@ -1,12 +1,15 @@
 import StoryCard from "../../StoryCard/StoryCard";
 import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineBars } from "react-icons/ai";
 import ListChapter from "./ListChap";
 
 const Story = ({ storyData }) => {
+  const { slug } = useParams();
   const story = storyData;
-
+  let navigate = useNavigate();
   const [selectedTopping, setSelectedTopping] = React.useState([]);
+  const [openList, setOpenList] = React.useState(false);
   // const [selectedSize, setSelectedSize] = React.useState(storyData.size[0])
 
   const handlePickSize = (size) => {
@@ -45,11 +48,11 @@ const Story = ({ storyData }) => {
             <span>{story.author}</span>
           </div>
           <div className="mt-4">
-            <span className="font-bold">Số chương:  </span>
+            <span className="font-bold">Số chương: </span>
             <span>{story.totalChapter}</span>
           </div>
           <div className="mt-4">
-            <span className="font-bold">Tình trạng:  </span>
+            <span className="font-bold">Tình trạng: </span>
             {story.isFull ? (
               <span>Hoàn thành</span>
             ) : (
@@ -58,8 +61,8 @@ const Story = ({ storyData }) => {
           </div>
           <div className="flex flex-col justify-center mt-4">
             <button
-              onClick={() => handleAddToCart()}
-              className="bg-orange-500 text-white w-1/3 font-bold py-3 rounded-xl mb-4">
+              className="bg-orange-500 text-white w-1/3 font-bold py-3 rounded-xl mb-4"
+              onClick={() => navigate(`/story/${slug}/1`)}>
               Đọc từ đầu
             </button>
             <button
@@ -69,7 +72,9 @@ const Story = ({ storyData }) => {
             </button>
           </div>
           <div className=" absolute bottom-0">
-            <button className=" flex flex-col">
+            <button
+              className=" flex flex-col"
+              onClick={() => setOpenList(!openList)}>
               <AiOutlineBars className=" text-4xl self-center" />
               <span>Mục lục</span>
             </button>
@@ -77,7 +82,7 @@ const Story = ({ storyData }) => {
         </div>
       </div>
 
-      <ListChapter />
+      {openList && <ListChapter totalChapter={story.totalChapter} />}
 
       <div className="mt-4 py-4 border-y-2">
         <span className="font-semibold">Tóm tắt</span>
