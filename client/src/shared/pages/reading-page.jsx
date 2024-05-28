@@ -1,14 +1,14 @@
 // import { TextField } from "@mui/material";
-import { useState, useEffect } from "react";
-import { jsPDF } from "jspdf";
-import { getChapter, getStory } from "../../api/story";
-import { useParams, useNavigate } from "react-router-dom";
-
-import CustomDialog from "../../features/ReadingPage/components/Dialog";
-import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
-import Content from "../../features/ReadingPage/components/Content";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useState, useEffect } from 'react';
+import { jsPDF } from 'jspdf';
+import { getChapter, getStory } from '../../api/story';
+import { useParams, useNavigate } from 'react-router-dom';
+import openSansFont from '../../assets/fonts/OpenSans-Regular.ttf';
+import CustomDialog from '../../features/ReadingPage/components/Dialog';
+import ChangeStyle from '../../features/ReadingPage/components/ChangeStyle';
+import Content from '../../features/ReadingPage/components/Content';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { AiFillCaretUp, AiOutlineRight, AiOutlineLeft, AiOutlineVerticalAlignBottom, AiFillHome, AiFillEdit  } from "react-icons/ai";
 
@@ -35,30 +35,34 @@ export default function ReadingPage() {
   );
   const [bgColor, setBgColor] = useState(
     localStorage.getItem("bgColor") || "  "
+
   );
   const [fontSize, setFontSize] = useState(
-    localStorage.getItem("fontSize") || 16
+    localStorage.getItem('fontSize') || 16
   );
   const [fontFamily, setFontFamily] = useState(
-    localStorage.getItem("fontFamily") || " font-sans "
+    localStorage.getItem('fontFamily') || ' font-sans '
   );
   const [leading, setLeading] = useState(localStorage.getItem("leading") || " leading-[200%] ");
   const [textAlign, setTextAlign] = useState(
-    localStorage.getItem("textAlign") || " text-left "
+    localStorage.getItem('textAlign') || ' text-left '
   );
   const [open, setOpen] = useState(false);
   //
 
   // feat export to pdf
   const exportToPDF = () => {
-    const doc = new jsPDF();
-    const storyContent = document.getElementById("story-content").textContent;
+    const doc = new jsPDF('p', 'mm', 'a4');
 
-    // console.log(storyContent);
+    // Set the active font
+    const storyContent = document.getElementById('story-content').innerText;
+    console.log(storyContent);
 
-    doc.setFont("helvetica"); // set font
-    doc.setFontSize(12); // set font size
-    const lines = doc.splitTextToSize(storyContent, 180);
+    doc.addFont(openSansFont, 'OpenSans', 'normal');
+    doc.setFont('OpenSans');
+    doc.setFontSize(12);
+    const lines = doc.splitTextToSize(storyContent, 180); // Adjust the second argument as needed
+
     let y = 10; // start y position
 
     const pageHeight =
@@ -74,7 +78,7 @@ export default function ReadingPage() {
       y += 10; // move y down for next line
     }
 
-    doc.save("Story.pdf");
+    doc.save('Story.pdf');
   };
 
   // store current scroll position
@@ -94,7 +98,7 @@ export default function ReadingPage() {
   }, [slug, chapter]);
 
   // fetch data
-  const [chapterContent, setChapterContent] = useState("");
+  const [chapterContent, setChapterContent] = useState('');
   const [story, setStory] = useState({});
   const [server, setServer] = useState(1);
 
@@ -151,7 +155,8 @@ export default function ReadingPage() {
           name=""
           id=""
           value={server}
-          onChange={(e) => fetchChapter(chapter, e.target.value)}>
+          onChange={(e) => fetchChapter(chapter, e.target.value)}
+        >
           {/* {data.server.map((item) => (
             <option key={item} value={item}>
               {item}
@@ -172,7 +177,8 @@ export default function ReadingPage() {
           onChange={(e) => {
             fetchChapter(e.target.value, server);
             window.scrollTo(0, 0);
-          }}>
+          }}
+        >
           {Array.from({ length: story?.totalChapter }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               Chapter {i + 1}
@@ -182,9 +188,9 @@ export default function ReadingPage() {
       </div>
 
       <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isLoading}
-        >
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
 
@@ -244,7 +250,8 @@ export default function ReadingPage() {
       <CustomDialog
         open={open}
         title="Tuỳ chỉnh"
-        onClose={() => setOpen(false)}>
+        onClose={() => setOpen(false)}
+      >
         <ChangeStyle
           fontSize={fontSize}
           setColor={setColor}
