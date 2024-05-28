@@ -3,13 +3,12 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineBars } from "react-icons/ai";
 import ListChapter from "./ListChap";
-import { getReadChap } from "../../../utils/localStorage";
+import { getContinueChap } from "../../../utils/localStorage";
 
 const Story = ({ storyData }) => {
   const { slug } = useParams();
   const story = storyData;
   let navigate = useNavigate();
-  
 
   const [selectedTopping, setSelectedTopping] = React.useState([]);
   const [openList, setOpenList] = React.useState(false);
@@ -69,8 +68,13 @@ const Story = ({ storyData }) => {
               Đọc từ đầu
             </button>
             <button
-              onClick={() => handleAddToCart()}
-              className="bg-red-500 text-white w-1/3 font-bold py-3 rounded-xl">
+              className="bg-red-500 text-white w-1/3 font-bold py-3 rounded-xl"
+              onClick={() => {
+                let curChap = getContinueChap(slug);
+                if (curChap <= story.totalChapter) {
+                  navigate(`/story/${slug}/${curChap}`);
+                } else navigate(`/story/${slug}/${story.totalChapter}`);
+              }}>
               Đọc tiếp
             </button>
           </div>
