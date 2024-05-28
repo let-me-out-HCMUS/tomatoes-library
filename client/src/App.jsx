@@ -11,7 +11,7 @@ export default function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />}></Route>
-          <Route path="stories/:slug/">
+          <Route path="story/:slug/">
             <Route path="" element={<StoryPage />}></Route>
             <Route path=":chapter" element={<ReadingPage />}></Route>
           </Route>
