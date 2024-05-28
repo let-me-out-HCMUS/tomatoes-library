@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
 import { getChapter, getStory } from '../../api/story';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import openSansFont from '../../assets/fonts/OpenSans-Regular.ttf';
 import CustomDialog from '../../features/ReadingPage/components/Dialog';
 import ChangeStyle from '../../features/ReadingPage/components/ChangeStyle';
@@ -132,7 +132,7 @@ export default function ReadingPage() {
         setChapterContent(res.data);
         setServer(server);
         window.scrollTo(0, 0);
-        navigate(`/stories/${slug}/${chapter}`);
+        navigate(`/story/${slug}/${chapter}`);
       } catch (error) {
         console.error(error);
       }
@@ -144,9 +144,9 @@ export default function ReadingPage() {
   return (
     <div className=" relative h-full">
       <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
-        <h1 className=" font-bold text-2xl mt-8 mb-2 px-10 text-center">
+        <Link className=" font-bold text-2xl mt-8 mb-2 px-10 text-center" to={`/story/${slug}`}>
           {story?.name}
-        </h1>
+        </Link>
         <h3 className=" mb-4">
           Total words: {chapterContent?.split(" ").length}
         </h3>
@@ -221,7 +221,9 @@ export default function ReadingPage() {
             <AiOutlineLeft />
           </button>
         )}
-        <button className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center">
+        <button className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
+          onClick={() => navigate(`/story/${slug}`)}
+        >
           <AiFillHome />
         </button>
         <button
