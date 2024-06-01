@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import { getStories } from "../../api/story.js";
+import slugify from "slugify"; // Import thư viện slugify
 
 export default function StoryList() {
   const [stories, setStories] = React.useState([]);
@@ -12,7 +13,12 @@ export default function StoryList() {
     getStories()
       .then(response => {
         console.log('Stories from API:', response.data); 
-        setStories(response.data);
+        // Tạo slug cho mỗi câu chuyện và gán vào trường slug
+        const storiesWithSlug = response.data.map(story => ({
+          ...story,
+          slug: slugify(story.name, { lower: true }) // Tạo slug từ tên câu chuyện
+        }));
+        setStories(storiesWithSlug);
       })
       .catch(error => {
         console.error('Error fetching stories:', error);
@@ -57,7 +63,7 @@ export default function StoryList() {
       </div>
       <div className="lg:col-span-1 grid grid-cols-1 lg:grid-cols-1 gap-4">
         {stories.slice(0, 2).map((story, index) => (
-          <Link to={`stories/cac-nguoi-tu-tien-ta-lam-ruong/1`} key={index} className="card bg-white p-4 rounded-lg shadow-sm">
+          <Link to={`/story/${story.slug}`} key={index} className="card bg-white p-4 rounded-lg shadow-sm">
             <h2 className="text-lg font-bold mb-1">{story.name}</h2>
             <p className="text-gray-700 text-sm mb-2">{story.author}</p>
             <img
@@ -72,8 +78,10 @@ export default function StoryList() {
         <Slider {...settings}>
           {stories.slice(2, 10).map((story, index) => (
             <div key={index} className="p-2">
-              <Link to={`stories/cac-nguoi-tu-tien-ta-lam-ruong/1`} className="card bg-white p-4 rounded-lg shadow-sm">
-                <h2 className="text-lg font-bold mb-1">{story.name}</h2>
+              <Link to={`/story/${story.slug}`} className="card bg-white p-4 rounded-lg shadow-sm">
+                <h2 className="text-lg font-bold mb-1">
+                    {story.name.length > 20 ? story.name.substring(0, 20) + "..." : story.name}
+                </h2>
                 <p className="text-gray-700 text-sm mb-2">{story.author}</p>
                 <img
                   className="w-full h-32 object-cover rounded-lg"
