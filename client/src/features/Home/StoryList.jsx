@@ -3,62 +3,22 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
-
-const mockStories = [
-  {
-    title: "Black Clover",
-    description: "Tham gia vào trận chiến tại vương quốc Space",
-    imageUrl: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/black-clover-9.jpg",
-  },
-  {
-    title: "Trọng sinh tu tiên",
-    description: "Tu tiên không hề khó",
-    imageUrl: "https://audiotruyenfull.com/wp-content/uploads/2020/02/Trong-Sinh-Tu-Tien-Tai-Do-Thi.jpg",
-  },
-  {
-    title: "Trác Phàm đại náo tu tiên",
-    description: "Ta đại náo thánh vực",
-    imageUrl: "https://s1.dmcdn.net/v/RM8AE1TVWqXZAtWar/x1080",
-  },
-  {
-    title: "Nhát chém linh hồn",
-    description: "Ta làm gì mà người nói vậy",
-    imageUrl: "https://audiotruyenfull.com/wp-content/uploads/2020/02/Thanh-than-tu-nguyen-thuy-bo-lac-bat-dau.jpg.webp",
-  },
-  {
-    title: "Thánh thiên tiên vực",
-    description: "Tiên Vực à? Ta tới đây",
-    imageUrl: "https://tienvuc.vn/banner.jpg",
-  },
-  {
-    title: "Say à? Ta say đây",
-    description: "Say gếch",
-    imageUrl: "https://cdn.9pay.vn/tin-tuc/vuong-lam-trong-phim-hoat-hinh-tien-nghich-1696405688.jpg",
-  },
-  {
-    title: "Tổng tài cực căng",
-    description: "Tổng tài là ta",
-    imageUrl: "https://i.ytimg.com/vi/RByiCrCaQk0/maxresdefault.jpg",
-  },
-  {
-    title: "Dương Dương tu tiên",  
-    description: "Tu luyện bá thể",
-    imageUrl: "https://afamilycdn.com/150157425591193600/2024/1/1/ava-luton-vs-chelsea-1619-1704103299193-1704103299254222919430.jpg",
-  },
-  {
-    title: "Bá đạo là ta",
-    description: "Thanh kiếm của ta đã đến lúc phải rút ra",
-    imageUrl: "https://media-cdn-v2.laodong.vn/storage/newsportal/2023/8/1/1223740/Duong-Duong.jpeg",
-  },
-];
+import { getStories } from "../../api/story.js";
 
 export default function StoryList() {
   const [stories, setStories] = React.useState([]);
 
   React.useEffect(() => {
-    // MOCK DATA FOR TEST
-    setStories(mockStories);
+    getStories()
+      .then(response => {
+        console.log('Stories from API:', response.data); 
+        setStories(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching stories:', error);
+      });
   }, []);
+  
 
   const settings = {
     dots: true,
@@ -98,12 +58,12 @@ export default function StoryList() {
       <div className="lg:col-span-1 grid grid-cols-1 lg:grid-cols-1 gap-4">
         {stories.slice(0, 2).map((story, index) => (
           <Link to={`stories/cac-nguoi-tu-tien-ta-lam-ruong/1`} key={index} className="card bg-white p-4 rounded-lg shadow-sm">
-            <h2 className="text-lg font-bold mb-1">{story.title}</h2>
-            <p className="text-gray-700 text-sm mb-2">{story.description}</p>
+            <h2 className="text-lg font-bold mb-1">{story.name}</h2>
+            <p className="text-gray-700 text-sm mb-2">{story.author}</p>
             <img
               className="w-full h-32 object-cover rounded-lg"
-              src={story.imageUrl}
-              alt={story.title} 
+              src={story.coverImage}
+              alt={story.name} 
             />
           </Link>
         ))}
@@ -113,12 +73,12 @@ export default function StoryList() {
           {stories.slice(2, 10).map((story, index) => (
             <div key={index} className="p-2">
               <Link to={`stories/cac-nguoi-tu-tien-ta-lam-ruong/1`} className="card bg-white p-4 rounded-lg shadow-sm">
-                <h2 className="text-lg font-bold mb-1">{story.title}</h2>
-                <p className="text-gray-700 text-sm mb-2">{story.description}</p>
+                <h2 className="text-lg font-bold mb-1">{story.name}</h2>
+                <p className="text-gray-700 text-sm mb-2">{story.author}</p>
                 <img
                   className="w-full h-32 object-cover rounded-lg"
-                  src={story.imageUrl}
-                  alt={story.title}
+                  src={story.coverImage}
+                  alt={story.name}
                 />
               </Link>
             </div>

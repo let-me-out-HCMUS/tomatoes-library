@@ -22,7 +22,7 @@ app.all("*", (req, res, next) => {
   next(new AppError(404, `Can't find ${req.originalUrl} on this server !`));
 });
 
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`App running on port ${port} ...`);
 });
