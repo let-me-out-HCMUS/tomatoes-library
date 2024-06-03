@@ -20,7 +20,7 @@ export default function SpecialStory() {
           </p>
 
           {/* TODO: navigate to story  */}
-          <Link to="/menu/tea">
+          <Link to="/stories/cac-nguoi-tu-tien-ta-lam-ruong/1">
             <button className="mt-6 py-2 w-full bg-[#778B37] text-white rounded-lg">
               Đọc ngay
             </button>

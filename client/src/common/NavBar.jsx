@@ -12,6 +12,7 @@ import { Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getCategories } from '../api/category';
 
+
 // Xem thêm: https://mui.com/material-ui/react-app-bar/
 export default function NavBar() {
   const [searchValue, setSearchValue] = useState('');
@@ -51,7 +52,7 @@ export default function NavBar() {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            SAY GEX NOVEL
+            <Link to="/">SAY GEX NOVEL</Link>
           </Typography>
 
           <Stack className="relative">
