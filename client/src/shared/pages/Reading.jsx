@@ -1,5 +1,5 @@
 // import { TextField } from "@mui/material";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { jsPDF } from 'jspdf';
 import { getChapter, getStory } from '../../api/story';
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -88,7 +88,7 @@ export default function ReadingPage() {
       localStorage.setItem(`${slug}-${chapter}`, window.scrollY);
     };
 
-    // Run handleScroll every 30sec
+    // Run handleScroll every 10sec
     const intervalId = setInterval(handleScroll, 10000);
 
     // Cleanup function to clear the interval when the component unmounts
@@ -102,13 +102,12 @@ export default function ReadingPage() {
   const [story, setStory] = useState({});
   const [server, setServer] = useState(1);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function fetchData() {
       try {
-        let resChap = await getChapter(slug, chapter);
+        let resChap = await getChapter(slug, chapter, server);
         let resStory = await getStory(slug);
-        // setChapterContent(resChap.data);
-        // setStory(resStory.data);
+        
         Promise.all([resChap, resStory]).then((values) => {
           setChapterContent(values[0]?.data);
           setStory(values[1]?.data);
@@ -116,7 +115,6 @@ export default function ReadingPage() {
           const scrollY = localStorage.getItem(`${slug}-${chapter}`);
           window.scrollTo(0, scrollY);
         });
-        // console.log(resChap, resStory)
       } catch (error) {
         console.error(error);
       }
@@ -131,7 +129,10 @@ export default function ReadingPage() {
         let res = await getChapter(slug, chapter, story?.source[server - 1]);
         setChapterContent(res.data);
         setServer(server);
+
         window.scrollTo(0, 0);
+        localStorage.removeItem(`${slug}-${chapter-1}`);
+        
         navigate(`/story/${slug}/${chapter}`);
       } catch (error) {
         console.error(error);
