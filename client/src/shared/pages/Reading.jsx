@@ -1,65 +1,71 @@
 // import { TextField } from "@mui/material";
-import { useState, useEffect } from 'react';
-import { jsPDF } from 'jspdf';
-import { getChapter, getStory } from '../../api/story';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import openSansFont from '../../assets/fonts/OpenSans-Regular.ttf';
-import CustomDialog from '../../features/ReadingPage/components/Dialog';
-import ChangeStyle from '../../features/ReadingPage/components/ChangeStyle';
-import Content from '../../features/ReadingPage/components/Content';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import { useState, useEffect, useLayoutEffect } from "react";
+import { jsPDF } from "jspdf";
+import { getChapter, getStory } from "../../api/story";
+import { addChapToLocalStorage } from "../../utils/localStorage";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import openSansFont from "../../assets/fonts/OpenSans-Regular.ttf";
+import CustomDialog from "../../features/ReadingPage/components/Dialog";
+import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
+import Content from "../../features/ReadingPage/components/Content";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
-import { AiFillCaretUp, AiOutlineRight, AiOutlineLeft, AiOutlineVerticalAlignBottom, AiFillHome, AiFillEdit  } from "react-icons/ai";
+import {
+  AiFillCaretUp,
+  AiOutlineRight,
+  AiOutlineLeft,
+  AiOutlineVerticalAlignBottom,
+  AiFillHome,
+  AiFillEdit,
+} from "react-icons/ai";
 
 export default function ReadingPage() {
   const { slug, chapter } = useParams();
   const navigate = useNavigate();
 
-  let listChap = JSON.parse(localStorage.getItem(slug)) || [];
-  if (!listChap.includes(chapter))
-  {
-    listChap.push(chapter);
-    listChap.sort((a, b) => a - b);
-    localStorage.setItem(`${slug}`, JSON.stringify(listChap));
-  }
-
+  // let listChap = JSON.parse(localStorage.getItem(slug)) || [];
+  // if (!listChap.includes(chapter))
+  // {
+  //   listChap.push(chapter);
+  //   listChap.sort((a, b) => a - b);
+  //   localStorage.setItem(`${slug}`, JSON.stringify(listChap));
+  // }
 
   const [isLoading, setIsLoading] = useState(true);
 
   // console.log(slug, chapter);
 
   // handle style text
-  const [color, setColor] = useState(
-    localStorage.getItem("color") || "  "
-  );
+  const [color, setColor] = useState(localStorage.getItem("color") || "  ");
   const [bgColor, setBgColor] = useState(
     localStorage.getItem("bgColor") || "  "
-
   );
   const [fontSize, setFontSize] = useState(
-    localStorage.getItem('fontSize') || 16
+    localStorage.getItem("fontSize") || 16
   );
   const [fontFamily, setFontFamily] = useState(
-    localStorage.getItem('fontFamily') || ' font-sans '
+    localStorage.getItem("fontFamily") || " font-sans "
   );
-  const [leading, setLeading] = useState(localStorage.getItem("leading") || " leading-[200%] ");
+  const [leading, setLeading] = useState(
+    localStorage.getItem("leading") || " leading-[200%] "
+  );
   const [textAlign, setTextAlign] = useState(
-    localStorage.getItem('textAlign') || ' text-left '
+    localStorage.getItem("textAlign") || " text-left "
   );
   const [open, setOpen] = useState(false);
   //
 
   // feat export to pdf
   const exportToPDF = () => {
-    const doc = new jsPDF('p', 'mm', 'a4');
+    const doc = new jsPDF("p", "mm", "a4");
 
     // Set the active font
-    const storyContent = document.getElementById('story-content').innerText;
+    const storyContent = document.getElementById("story-content").innerText;
     console.log(storyContent);
 
-    doc.addFont(openSansFont, 'OpenSans', 'normal');
-    doc.setFont('OpenSans');
+    doc.addFont(openSansFont, "OpenSans", "normal");
+    doc.setFont("OpenSans");
     doc.setFontSize(12);
     const lines = doc.splitTextToSize(storyContent, 180); // Adjust the second argument as needed
 
@@ -78,18 +84,18 @@ export default function ReadingPage() {
       y += 10; // move y down for next line
     }
 
-    doc.save('Story.pdf');
+    doc.save("Story.pdf");
   };
 
   // store current scroll position
   useEffect(() => {
-    const handleScroll = () => {
-      // console.log(window.scrollY);
+    const updatePos = () => {
       localStorage.setItem(`${slug}-${chapter}`, window.scrollY);
     };
 
-    // Run handleScroll every 30sec
-    const intervalId = setInterval(handleScroll, 10000);
+    addChapToLocalStorage(slug, chapter);
+    // Run handleScroll every 10sec
+    const intervalId = setInterval(updatePos, 10000);
 
     // Cleanup function to clear the interval when the component unmounts
     return () => {
@@ -98,17 +104,16 @@ export default function ReadingPage() {
   }, [slug, chapter]);
 
   // fetch data
-  const [chapterContent, setChapterContent] = useState('');
+  const [chapterContent, setChapterContent] = useState("");
   const [story, setStory] = useState({});
   const [server, setServer] = useState(1);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function fetchData() {
       try {
-        let resChap = await getChapter(slug, chapter);
+        let resChap = await getChapter(slug, chapter, server);
         let resStory = await getStory(slug);
-        // setChapterContent(resChap.data);
-        // setStory(resStory.data);
+
         Promise.all([resChap, resStory]).then((values) => {
           setChapterContent(values[0]?.data);
           setStory(values[1]?.data);
@@ -116,7 +121,6 @@ export default function ReadingPage() {
           const scrollY = localStorage.getItem(`${slug}-${chapter}`);
           window.scrollTo(0, scrollY);
         });
-        // console.log(resChap, resStory)
       } catch (error) {
         console.error(error);
       }
@@ -131,7 +135,10 @@ export default function ReadingPage() {
         let res = await getChapter(slug, chapter, story?.source[server - 1]);
         setChapterContent(res.data);
         setServer(server);
+
         window.scrollTo(0, 0);
+        localStorage.removeItem(`${slug}-${chapter - 1}`);
+
         navigate(`/story/${slug}/${chapter}`);
       } catch (error) {
         console.error(error);
@@ -143,31 +150,37 @@ export default function ReadingPage() {
 
   return (
     <div className=" relative h-full">
+      {/* Loading Component */}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      {/* Title - heading */}
       <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
-        <Link className=" font-bold text-2xl mt-8 mb-2 px-10 text-center" to={`/story/${slug}`}>
+        <Link
+          className=" font-bold text-2xl mt-8 mb-2 px-10 text-center"
+          to={`/story/${slug}`}>
           {story?.name}
         </Link>
         <h3 className=" mb-4">
           Total words: {chapterContent?.split(" ").length}
         </h3>
+        {/* server */}
         <select
           className=" mb-2 text-black border-solid border-2"
           name=""
           id=""
           value={server}
-          onChange={(e) => fetchChapter(chapter, e.target.value)}
-        >
-          {/* {data.server.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))} */}
+          onChange={(e) => fetchChapter(chapter, e.target.value)}>
           {story?.source?.map((item, idx) => (
             <option key={item} value={idx}>
               Server {idx + 1}
             </option>
           ))}
         </select>
+        {/* list chap */}
         <select
           name=""
           id=""
@@ -177,8 +190,7 @@ export default function ReadingPage() {
           onChange={(e) => {
             fetchChapter(e.target.value, server);
             window.scrollTo(0, 0);
-          }}
-        >
+          }}>
           {Array.from({ length: story?.totalChapter }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               Chapter {i + 1}
@@ -187,13 +199,7 @@ export default function ReadingPage() {
         </select>
       </div>
 
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-
+      {/* Content */}
       <Content
         content={chapterContent}
         fontSize={fontSize}
@@ -204,6 +210,7 @@ export default function ReadingPage() {
         textAlign={textAlign}
       />
 
+      {/* Button */}
       <div className=" flex flex-col fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 border-opacity-20 p-2 text-2xl bg-white">
         <button
           className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
@@ -221,9 +228,9 @@ export default function ReadingPage() {
             <AiOutlineLeft />
           </button>
         )}
-        <button className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
-          onClick={() => navigate(`/story/${slug}`)}
-        >
+        <button
+          className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
+          onClick={() => navigate(`/story/${slug}`)}>
           <AiFillHome />
         </button>
         <button
@@ -245,15 +252,14 @@ export default function ReadingPage() {
         )}
         {/* download btn */}
         <button className=" py-2 self-center" onClick={exportToPDF}>
-         <AiOutlineVerticalAlignBottom/>
+          <AiOutlineVerticalAlignBottom />
         </button>
       </div>
 
       <CustomDialog
         open={open}
         title="Tuỳ chỉnh"
-        onClose={() => setOpen(false)}
-      >
+        onClose={() => setOpen(false)}>
         <ChangeStyle
           fontSize={fontSize}
           setColor={setColor}
