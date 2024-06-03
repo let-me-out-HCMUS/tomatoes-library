@@ -11,6 +11,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getCategories } from '../api/category';
+import slugConverter from '../utils/slugConverter';
 
 
 // Xem thêm: https://mui.com/material-ui/react-app-bar/
@@ -28,7 +29,6 @@ export default function NavBar() {
       try {
         let res = await getCategories();
         setCategories(res.data);
-        console.log(res.data);
       } catch (error) {
         console.error(error);
       }
@@ -57,7 +57,7 @@ export default function NavBar() {
 
           <Stack className="relative">
             <Typography
-              className="hover:cursor-pointer"
+              className="hover:cursor-pointer hover:text-slate-500"
               color="black"
               onClick={openCategoriesNav}
             >
@@ -65,11 +65,11 @@ export default function NavBar() {
             </Typography>
 
             {isOpenNav && (
-              <div className="absolute mt-12 bg-slate-200	 rounded-sm">
+              <div className="absolute mt-11 bg-slate-200	 rounded-sm">
                 {categories.map((category) => (
                   <Typography key={category} color="black">
                     <Link
-                      to={`/categories/${category}`}
+                      to={`/categories/${slugConverter(category)}`}
                       className=" block w-[200px] border-b-[1px]
                   border-solid px-[17px] py-[16px] text-base hover:bg-slate-300 "
                     >
