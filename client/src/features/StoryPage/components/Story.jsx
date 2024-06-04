@@ -60,9 +60,9 @@ const Story = ({ storyData }) => {
           <div className="mt-4">
             <span className="font-bold">Tình trạng: </span>
             {story.isFull ? (
-              <span>Hoàn thành</span>
+              <span className=" text-green-400 font-semibold">Hoàn thành</span>
             ) : (
-              <span>Đang tiến hành</span>
+              <span className=" text-red-400 font-semibold">Đang tiến hành</span>
             )}
           </div>
           <div className="flex flex-col justify-center mt-4">

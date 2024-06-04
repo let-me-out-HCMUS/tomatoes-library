@@ -23,17 +23,15 @@ export default function ListChapter({ totalChapter }) {
         {Array.from({ length: totalChapter }, (_, i) => (
           <button
             key={i}
-            className=" text-center p-2 pb-0 w-full border-b border-opacity-30 border-black hover:bg-slate-400 "
-            onClick={(e) => {
-              e.preventDefault();
-              console.log(`/story/${slug}/${i + 1}`);
-              navigate(`/story/${slug}/${i + 1}`);
+            className={` text-center p-2 pb-0 w-full border-b border-opacity-30 border-black hover:bg-slate-400 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-200'} `}
+            onClick={() => {
+              
+              navigate(`/story/${slug}/${totalChapter - i}`);
             }}>
-            {listReadChap.includes(i + 1) ? (
-              <span className=" text-gray-400">{i + 1}</span>
+            {listReadChap.includes(totalChapter - i) ? (
+              <span className=" text-purple-500">{totalChapter - i}</span>
             ) : (
-              <span>{i + 1}</span>
-            
+              <span>{totalChapter - i}</span>
             )}
             
           </button>
