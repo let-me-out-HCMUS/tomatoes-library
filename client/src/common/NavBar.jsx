@@ -12,6 +12,7 @@ import { Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getCategories } from '../api/category';
 import slugConverter from '../utils/slugConverter';
+import ReorderableList from './ReorderList';
 
 
 // Xem thêm: https://mui.com/material-ui/react-app-bar/
@@ -19,9 +20,16 @@ export default function NavBar() {
   const [searchValue, setSearchValue] = useState('');
   const [categories, setCategories] = useState([]);
   const [isOpenNav, setIsOpenNav] = useState(false);
+  const [isOpenOrderNav, setIsOpenOrderNav] = useState(false);
 
   const openCategoriesNav = () => {
     setIsOpenNav(!isOpenNav);
+    setIsOpenOrderNav(false)
+  };
+
+  const openOrderNav = () => {
+    setIsOpenOrderNav(!isOpenOrderNav);
+    setIsOpenNav(false)
   };
 
   useEffect(() => {
@@ -55,7 +63,7 @@ export default function NavBar() {
             <Link to="/">SAY GEX NOVEL</Link>
           </Typography>
 
-          <Stack className="relative">
+          <Stack className="relative" direction="row" spacing={2}>
             <Typography
               className="hover:cursor-pointer hover:text-slate-500"
               color="black"
@@ -64,8 +72,16 @@ export default function NavBar() {
               Thể loại
             </Typography>
 
+            <Typography
+              className="hover:cursor-pointer hover:text-slate-500"
+              color="black"
+              onClick={openOrderNav}
+            >
+              Thứ tự
+            </Typography>
+
             {isOpenNav && (
-              <div className="absolute mt-11 bg-slate-200	 rounded-sm">
+              <div className="absolute top-14 -left-6 sm:top-12 sm:-left-4 bg-slate-200	 rounded-sm">
                 {categories.map((category) => (
                   <Typography key={category} color="black">
                     <Link
@@ -77,6 +93,12 @@ export default function NavBar() {
                     </Link>
                   </Typography>
                 ))}
+              </div>
+            )}
+
+            {isOpenOrderNav && (
+              <div className="absolute top-12 left-10 sm:top-10 sm:left-14 rounded-sm">
+                <ReorderableList />
               </div>
             )}
           </Stack>
@@ -92,6 +114,10 @@ export default function NavBar() {
               onChange={(e) => {
                 setSearchValue(e.target.value);
                 setIsSearch(1);
+              }}
+              onClick={() => {
+                setIsOpenNav(false)
+                setIsOpenOrderNav(false)
               }}
             />
           </Search>
