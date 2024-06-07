@@ -19,6 +19,8 @@ export default function App() {
               <Route path=":chapter" element={<ReadingPage />}></Route>
             </Route>
 
+            <Route path="/categories/:slug" element={<CategoryList />}></Route>
+
             <Route path="storyholic/:id" element={<StoryHolic />} />
           </Route>
           {/* All invalid route will render PageNotFound page */}
