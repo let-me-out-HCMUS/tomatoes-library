@@ -1,15 +1,15 @@
 // import { TextField } from "@mui/material";
-import { useState, useEffect, useLayoutEffect } from "react";
-import { jsPDF } from "jspdf";
-import { getChapter, getStory } from "../../api/story";
-import { addChapToLocalStorage } from "../../utils/localStorage";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import openSansFont from "../../assets/fonts/OpenSans-Regular.ttf";
-import CustomDialog from "../../features/ReadingPage/components/Dialog";
-import ChangeStyle from "../../features/ReadingPage/components/ChangeStyle";
-import Content from "../../features/ReadingPage/components/Content";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useState, useEffect, useLayoutEffect } from 'react';
+import { getChapter, getStory } from '../../api/story';
+import { addChapToLocalStorage } from '../../utils/localStorage';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import CustomDialog from '../../features/ReadingPage/components/Dialog';
+import ChangeStyle from '../../features/ReadingPage/components/ChangeStyle';
+import Content from '../../features/ReadingPage/components/Content';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import pdfExport from '../../utils/pdfExport';
+import epubExport from '../../utils/epubExport';
 
 import {
   AiFillCaretUp,
@@ -18,7 +18,8 @@ import {
   AiOutlineVerticalAlignBottom,
   AiFillHome,
   AiFillEdit,
-} from "react-icons/ai";
+  AiOutlineFile,
+} from 'react-icons/ai';
 
 export default function ReadingPage() {
   const { slug, chapter } = useParams();
@@ -37,54 +38,40 @@ export default function ReadingPage() {
   // console.log(slug, chapter);
 
   // handle style text
-  const [color, setColor] = useState(localStorage.getItem("color") || "  ");
+  const [color, setColor] = useState(localStorage.getItem('color') || '  ');
   const [bgColor, setBgColor] = useState(
-    localStorage.getItem("bgColor") || "  "
+    localStorage.getItem('bgColor') || '  '
   );
   const [fontSize, setFontSize] = useState(
-    localStorage.getItem("fontSize") || 16
+    localStorage.getItem('fontSize') || 16
   );
   const [fontFamily, setFontFamily] = useState(
-    localStorage.getItem("fontFamily") || " font-sans "
+    localStorage.getItem('fontFamily') || ' font-sans '
   );
   const [leading, setLeading] = useState(
-    localStorage.getItem("leading") || " leading-[200%] "
+    localStorage.getItem('leading') || ' leading-[200%] '
   );
   const [textAlign, setTextAlign] = useState(
-    localStorage.getItem("textAlign") || " text-left "
+    localStorage.getItem('textAlign') || ' text-left '
   );
   const [open, setOpen] = useState(false);
   //
 
   // feat export to pdf
   const exportToPDF = () => {
-    const doc = new jsPDF("p", "mm", "a4");
+    const storyContent = document.getElementById('story-content').innerText;
+    //console.log(storyContent);
 
-    // Set the active font
-    const storyContent = document.getElementById("story-content").innerText;
-    console.log(storyContent);
+    pdfExport(storyContent);
+  };
 
-    doc.addFont(openSansFont, "OpenSans", "normal");
-    doc.setFont("OpenSans");
-    doc.setFontSize(12);
-    const lines = doc.splitTextToSize(storyContent, 180); // Adjust the second argument as needed
+  const exportToEPUB = () => {
+    let storyContent = document.getElementById('story-content').innerText;
+    // Replace /n with <br> tag
+    storyContent = storyContent.replace(/\n/g, '<br/>');
+    //console.log(storyContent);
 
-    let y = 10; // start y position
-
-    const pageHeight =
-      doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
-
-    for (let i = 0; i < lines.length; i++) {
-      if (y > pageHeight - 10) {
-        // Go to next page if the line won't fit
-        doc.addPage();
-        y = 10; // reset y position to top of new page
-      }
-      doc.text(lines[i], 10, y);
-      y += 10; // move y down for next line
-    }
-
-    doc.save("Story.pdf");
+    epubExport(storyContent);
   };
 
   // store current scroll position
@@ -104,7 +91,7 @@ export default function ReadingPage() {
   }, [slug, chapter]);
 
   // fetch data
-  const [chapterContent, setChapterContent] = useState("");
+  const [chapterContent, setChapterContent] = useState('');
   const [story, setStory] = useState({});
   const [server, setServer] = useState(1);
 
@@ -152,8 +139,9 @@ export default function ReadingPage() {
     <div className=" relative h-full">
       {/* Loading Component */}
       <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}>
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
 
@@ -161,11 +149,12 @@ export default function ReadingPage() {
       <div className={` pt-8 flex-col flex items-center ` + bgColor + color}>
         <Link
           className=" font-bold text-2xl mt-8 mb-2 px-10 text-center"
-          to={`/story/${slug}`}>
+          to={`/story/${slug}`}
+        >
           {story?.name}
         </Link>
         <h3 className=" mb-4">
-          Total words: {chapterContent?.split(" ").length}
+          Total words: {chapterContent?.split(' ').length}
         </h3>
         {/* server */}
         <select
@@ -173,7 +162,8 @@ export default function ReadingPage() {
           name=""
           id=""
           value={server}
-          onChange={(e) => fetchChapter(chapter, e.target.value)}>
+          onChange={(e) => fetchChapter(chapter, e.target.value)}
+        >
           {story?.source?.map((item, idx) => (
             <option key={item} value={idx}>
               Server {idx + 1}
@@ -190,7 +180,8 @@ export default function ReadingPage() {
           onChange={(e) => {
             fetchChapter(e.target.value, server);
             window.scrollTo(0, 0);
-          }}>
+          }}
+        >
           {Array.from({ length: story?.totalChapter }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               Chapter {i + 1}
@@ -214,13 +205,15 @@ export default function ReadingPage() {
       <div className=" flex flex-col fixed right-4 bottom-12 rounded-full border-solid border-zinc-800 border-2 border-opacity-20 p-2 text-2xl bg-white">
         <button
           className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
-          onClick={() => window.scrollTo(0, 0)}>
+          onClick={() => window.scrollTo(0, 0)}
+        >
           <AiFillCaretUp />
         </button>
         {chapter > 1 ? (
           <button
             className=" border-b-2 border-solid border-black border-opacity-20 py-2"
-            onClick={() => fetchChapter(parseInt(chapter) - 1)}>
+            onClick={() => fetchChapter(parseInt(chapter) - 1)}
+          >
             <AiOutlineLeft />
           </button>
         ) : (
@@ -230,19 +223,22 @@ export default function ReadingPage() {
         )}
         <button
           className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
-          onClick={() => navigate(`/story/${slug}`)}>
+          onClick={() => navigate(`/story/${slug}`)}
+        >
           <AiFillHome />
         </button>
         <button
           className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
-          onClick={() => setOpen(true)}>
+          onClick={() => setOpen(true)}
+        >
           <AiFillEdit />
         </button>
 
         {chapter < story?.totalChapter ? (
           <button
             className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
-            onClick={() => fetchChapter(parseInt(chapter) + 1)}>
+            onClick={() => fetchChapter(parseInt(chapter) + 1)}
+          >
             <AiOutlineRight />
           </button>
         ) : (
@@ -254,12 +250,18 @@ export default function ReadingPage() {
         <button className=" py-2 self-center" onClick={exportToPDF}>
           <AiOutlineVerticalAlignBottom />
         </button>
+
+        {/* Epub Export */}
+        <button className=" py-2 self-center" onClick={exportToEPUB}>
+          <AiOutlineFile />
+        </button>
       </div>
 
       <CustomDialog
         open={open}
         title="Tuỳ chỉnh"
-        onClose={() => setOpen(false)}>
+        onClose={() => setOpen(false)}
+      >
         <ChangeStyle
           fontSize={fontSize}
           setColor={setColor}

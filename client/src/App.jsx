@@ -1,11 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ReadingPage from "./shared/pages/Reading";
-import Home from "./shared/pages/Home";
-import AppLayout from "./common/AppLayout";
-import StoryHolic from "./features/Storyholic/StoryHolic";
-import StoryPage from "./shared/pages/Story";
-import PageNotFound from "./shared/pages/PageNotFound";
-import SourceOrderContext from "./shared/context/SourceOrderContext";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ReadingPage from './shared/pages/Reading';
+import Home from './shared/pages/Home';
+import AppLayout from './common/AppLayout';
+import StoryHolic from './features/Storyholic/StoryHolic';
+import StoryPage from './shared/pages/Story';
+import PageNotFound from './shared/pages/PageNotFound';
+import SourceOrderContext from './shared/context/SourceOrderContext';
+import CategoryList from './shared/pages/CategoryList';
 
 export default function App() {
   return (
