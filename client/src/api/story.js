@@ -1,8 +1,8 @@
-import { axiosClient } from "./axios-instance";
+import { axiosClient } from './axios-instance';
 
 export const getStories = async () => {
   try {
-    const response = await axiosClient.get("/stories");
+    const response = await axiosClient.get('/stories');
     return response;
   } catch (error) {
     console.error(error);
@@ -29,7 +29,7 @@ export const getChapter = async (name, chapter, server) => {
         },
       }
     );
-    return response
+    return response;
   } catch (error) {
     console.error(`Error: ${error}`);
   }

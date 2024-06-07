@@ -14,7 +14,6 @@ import { getCategories } from '../api/category';
 import slugConverter from '../utils/slugConverter';
 import ReorderableList from './ReorderList';
 
-
 // Xem thêm: https://mui.com/material-ui/react-app-bar/
 export default function NavBar() {
   const [searchValue, setSearchValue] = useState('');
@@ -87,7 +86,8 @@ export default function NavBar() {
                     <Link
                       to={`/categories/${slugConverter(category)}`}
                       className=" block w-[200px] border-b-[1px]
-                  border-solid px-[17px] py-[16px] text-base hover:bg-slate-300 "
+                  border-solid px-[17px] py-[16px] text-base hover:bg-slate-300"
+                      onClick={() => setIsOpenNav(false)}
                     >
                       {category}
                     </Link>
