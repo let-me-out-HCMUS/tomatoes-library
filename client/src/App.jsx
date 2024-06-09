@@ -6,7 +6,7 @@ import StoryHolic from './features/Storyholic/StoryHolic';
 import StoryPage from './shared/pages/Story';
 import PageNotFound from './shared/pages/PageNotFound';
 import SourceOrderContext from './shared/context/SourceOrderContext';
-import CategoryList from './shared/pages/CategoryList';
+import SearchPage from './shared/pages/SearchPage';
 
 export default function App() {
   return (
@@ -20,9 +20,13 @@ export default function App() {
               <Route path=":chapter" element={<ReadingPage />}></Route>
             </Route>
 
-            <Route path="/categories/:slug" element={<CategoryList />}></Route>
+            <Route path="/categories/:slug" element={<SearchPage />}></Route>
 
             <Route path="storyholic/:id" element={<StoryHolic />} />
+            <Route
+              path="search/:slug"
+              element={<SearchPage isSearch={true} />}
+            />
           </Route>
           {/* All invalid route will render PageNotFound page */}
           <Route path="*" element={<PageNotFound />} />

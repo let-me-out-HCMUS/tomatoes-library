@@ -34,3 +34,18 @@ export const getChapter = async (name, chapter, server) => {
     console.error(`Error: ${error}`);
   }
 };
+
+export const searchStories = async (query) => {
+  const source = '';
+
+  try {
+    const response = await axiosClient.get('/stories/search', {
+      params: {
+        query: query,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
