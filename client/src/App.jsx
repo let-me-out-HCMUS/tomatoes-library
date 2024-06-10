@@ -32,13 +32,6 @@ export default function App() {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </SourceOrderContext>
-          <Route path="/categories/:slug" element={<CategoryList />}></Route>
-
-          <Route path="storyholic/:id" element={<StoryHolic />} />
-        </Route>
-        {/* All invalid route will render PageNotFound page */}
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
     </BrowserRouter>
   );
 }
