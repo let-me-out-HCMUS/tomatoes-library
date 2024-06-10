@@ -30,7 +30,9 @@ exports.getStoryContent = async function (req, res, next) {
 
 exports.listStories = async function (req, res, next) {
   try {
-    const stories = await listStories();
+    const order = req.query.order.split(",")
+
+    const stories = await listStories(order);
     if (stories.length === 0) {
       throw new Error("Bad request");
     }

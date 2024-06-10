@@ -1,8 +1,8 @@
 import { axiosClient } from './axios-instance';
 
-export const getStories = async () => {
+export const getStories = async (order) => {
   try {
-    const response = await axiosClient.get('/stories');
+    const response = await axiosClient.get(`/stories?order=${order}`);
     return response;
   } catch (error) {
     console.error(error);

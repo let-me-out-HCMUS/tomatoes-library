@@ -32,7 +32,7 @@ exports.getStoryContent = async function (source, storySlug, chapter) {
   }
 };
 
-exports.listStories = async function () {
+exports.listStories = async function (order) {
   try {
     const data = fs.readFileSync("./config/config.json", {
       encoding: "utf-8",
@@ -40,8 +40,8 @@ exports.listStories = async function () {
 
     const config = JSON.parse(data);
     const totalStories = [];
-    for (let i = 0; i < config.length; i++) {
-      sourceConfig = config[i];
+    for (let i = 0; i < order.length; i++) {
+      const sourceConfig = config.find(cfg => cfg.source === order[i]);
 
       const listStoriesFunc = new Function(
         "fetch",
@@ -205,3 +205,22 @@ exports.listStoriesByCategory = async function (source, categorySlug) {
   }
 };
 
+exports.listSources = async function () {
+  try {
+    const data = fs.readFileSync("./config/config.json", {
+      encoding: "utf-8",
+    });
+
+    const config = JSON.parse(data);
+
+    return config.map(cfg => {
+      return {
+        source: cfg.source,
+        name: cfg.name
+      }
+    })
+    
+  } catch (error) {
+    console.error("Error list sources: ", error)
+  }
+}

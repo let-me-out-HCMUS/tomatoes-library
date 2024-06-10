@@ -5,7 +5,7 @@ export default function Footer() {
     <div className="bg-zinc-900 text-white p-5">
       <div className="grid grid-cols-1 p-6 gap-4 md:grid-cols-2">
         <div>
-          <p className="leading-10">Đặt hàng</p>
+          <p className="leading-10">Hợp tác</p>
           <p className="leading-10">Liên hệ</p>
           <p className="leading-10">
             227 Nguyễn Văn Cừ, Q.5, Thành phố Hồ Chí Minh
@@ -30,7 +30,7 @@ export default function Footer() {
               <p>Về chúng tôi</p>
               <p>Sản phẩm</p>
               <p>Khuyến mãi</p>
-              <p>Chuyện cà phê</p>
+              <p>Truyện chữ hay</p>
             </div>
           </div>
           <div>
@@ -44,12 +44,12 @@ export default function Footer() {
       </div>
       <div className="px-4 py-2">
         <p className="border-t-2 pt-8 border-t-white text-sm text-left">
-          Công ty cổ phần thương mại dịch vụ Trà Cà Phê VN <br />
+          Công ty cổ phần thương mại dịch vụ Truyện Chữ VN <br />
           Mã số DN: 69696969 do sở kế hoạch và đầu tư tp. HCM cấp ngày
           28/01/20204. Người đại diện: VI LÝ DUY TRƯỜNG <br />
           Địa chỉ: 227 Nguyễn Văn Cừ, phường 04, quận 5, tp Hồ Chí Minh Điện
-          thoại: (012) 3456 789 Email: n01@ptudweb.vn <br />© 2023-2024 Công ty
-          cổ phần thương mại dịch vụ Trà Cà Phê VN mọi quyền bảo lưu
+          thoại: (012) 3456 789 Email: nhom25@tkpm.vn <br />© 2023-2024 Công ty
+          cổ phần thương mại dịch vụ Truyện chữ VN mọi quyền bảo lưu
         </p>
       </div>
     </div>

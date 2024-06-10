@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@mui/material';
+import { List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Button } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { useContext } from 'react';
 import {SourceOrderContext} from '../shared/context/SourceOrderContext';
 
 const ReorderableList = () => {
-    const {getSourceOrder, moveSourceUp, moveSourceDown} = useContext(SourceOrderContext)
+    const {getSourceOrder, moveSourceUp, moveSourceDown, submit} = useContext(SourceOrderContext)
     const sources = getSourceOrder()
   return (
     <List>
       {sources.map((source, index) => (
-          <ListItem key={source}
+          <ListItem key={source.name}
             className="transition-transform duration-500 ease-in-out transform bg-gray-100 hover:bg-gray-200"
           >
-            <ListItemText primary={source}  className='mr-10 text-nowrap'/>
+            <ListItemText primary={source.name}  className='mr-10 text-nowrap'/>
             <ListItemSecondaryAction>
               <IconButton
                 edge="end"
@@ -34,6 +34,7 @@ const ReorderableList = () => {
             </ListItemSecondaryAction>
           </ListItem>
       ))}
+      <Button variant='contained' onClick={submit} fullWidth>Xác nhận</Button>
     </List>
   );
 };

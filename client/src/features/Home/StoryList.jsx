@@ -5,25 +5,33 @@ import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import { getStories } from "../../api/story.js";
 import slugify from "slugify"; // Import thư viện slugify
+import {SourceOrderContext} from '../../shared/context/SourceOrderContext.jsx/';
+
 
 export default function StoryList() {
   const [stories, setStories] = React.useState([]);
 
+  const {getSourceOrder} = React.useContext(SourceOrderContext)
+  const sourceOrder = getSourceOrder()
+  const order = sourceOrder.map(src => src.source).join(",")
+  const hasFetchedStories = React.useRef(false);
+
   React.useEffect(() => {
-    getStories()
-      .then(response => {
-        console.log('Stories from API:', response.data); 
-        // Tạo slug cho mỗi câu chuyện và gán vào trường slug
-        const storiesWithSlug = response.data.map(story => ({
-          ...story,
-          slug: slugify(story.name, { lower: true }) // Tạo slug từ tên câu chuyện
-        }));
-        setStories(storiesWithSlug);
-      })
-      .catch(error => {
-        console.error('Error fetching stories:', error);
-      });
-  }, []);
+    if (order && !hasFetchedStories.current) {
+      getStories(order)
+        .then(response => {
+          // Tạo slug cho mỗi câu chuyện và gán vào trường slug
+          const storiesWithSlug = response.data.map(story => ({
+            ...story,
+            slug: slugify(story.name, { lower: true }) // Tạo slug từ tên câu chuyện
+          }));
+          setStories(storiesWithSlug);
+        })
+        .catch(error => {
+          console.error('Error fetching stories:', error);
+        });
+    }
+  }, [order]);
   
 
   const settings = {

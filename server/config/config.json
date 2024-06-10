@@ -1,6 +1,7 @@
 [
   {
     "source": "truyen.tangthuvien.vn",
+    "name": "Tàng Thư Viện",
     "getContent": {
       "params": ["storySlug", "chapter"],
       "handler": "let url = `https://truyen.tangthuvien.vn/doc-truyen/${storySlug}/chuong-${chapter}/`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let content = document.querySelector('.box-chap').innerHTML; return content;"
@@ -28,6 +29,7 @@
   },
   {
     "source": "metruyen.net.vn",
+    "name": "Mê Truyện",
     "getContent": {
       "params": ["storySlug", "chapter"],
       "handler": "const url = `https://metruyen.net.vn/truyen/${storySlug}/chuong-${chapter}`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;const paragraphs = [];document.querySelector('.text-left').querySelectorAll('p').forEach(function (p) {paragraphs.push(p.textContent);});return paragraphs;"

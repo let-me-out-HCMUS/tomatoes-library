@@ -1,11 +1,32 @@
 import { createContext, useState, useEffect } from "react";
+import { getSources } from "../../api/source";
 
 export const SourceOrderContext = createContext();
 
-export default function ({ children }){
-    const [sourceOrder, setSourceOrder] = useState(['Truyện full', 'Tàng thư viện', 'Mê truyện chữ', 'Mê truyện']); // [{}]
+const SOURCES_ORDER = 'say-gex-sources-order'
 
-    // TODO: get all sources here
+export default function ({ children }){
+    const [sourceOrder, setSourceOrder] = useState([]); // [{}]
+
+    useEffect(() => {
+        (async function() {
+            if (localStorage[SOURCES_ORDER]){
+                setSourceOrder(JSON.parse(localStorage[SOURCES_ORDER]))
+                return
+            }
+
+            try {
+                const response = await getSources()
+                if (response.status === "success") {
+                    let data = response.data
+                    localStorage.setItem(SOURCES_ORDER, JSON.stringify(data))
+                    setSourceOrder(data)
+                }
+            } catch(error) {
+                console.log(error)
+            }
+        })()
+    }, [])
 
     const getSourceOrder = () => {
         return sourceOrder;
@@ -27,10 +48,16 @@ export default function ({ children }){
         setSourceOrder(newSourceOrder);
     };
 
+    const submit = () => {
+        localStorage.setItem(SOURCES_ORDER, JSON.stringify(sourceOrder))
+        window.location.reload()
+    }
+
     const value = {
         getSourceOrder,
         moveSourceUp,
-        moveSourceDown
+        moveSourceDown,
+        submit
     };
 
     return <SourceOrderContext.Provider value={value}>{children}</SourceOrderContext.Provider>;
