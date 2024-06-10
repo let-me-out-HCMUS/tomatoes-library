@@ -17,19 +17,14 @@ export default function StoryList() {
   const hasFetchedStories = React.useRef(false);
 
   React.useEffect(() => {
+    const fetchData = async () => {
+      const response = await getStories(order)
+      console.log(response.data);
+      setStories(response.data)
+    }
+
     if (order && !hasFetchedStories.current) {
-      getStories(order)
-        .then(response => {
-          // Tạo slug cho mỗi câu chuyện và gán vào trường slug
-          const storiesWithSlug = response.data.map(story => ({
-            ...story,
-            slug: slugify(story.name, { lower: true }) // Tạo slug từ tên câu chuyện
-          }));
-          setStories(storiesWithSlug);
-        })
-        .catch(error => {
-          console.error('Error fetching stories:', error);
-        });
+      fetchData()
     }
   }, [order]);
   

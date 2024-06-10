@@ -41,29 +41,33 @@ exports.listStories = async function (order) {
     const config = JSON.parse(data);
     const totalStories = [];
     for (let i = 0; i < order.length; i++) {
-      const sourceConfig = config.find(cfg => cfg.source === order[i]);
+      try {
+        const sourceConfig = config.find(cfg => cfg.source === order[i]);
 
-      const listStoriesFunc = new Function(
-        "fetch",
-        "JSDOM",
-        `return async function(){
-                  ${sourceConfig.listStories.handler}
-              }`
-      )(fetch, JSDOM);
+        const listStoriesFunc = new Function(
+          "fetch",
+          "JSDOM",
+          `return async function(){
+                    ${sourceConfig.listStories.handler}
+                }`
+        )(fetch, JSDOM);
 
-      const result = await listStoriesFunc();
-      for (let j = 0; j < result.length; j++) {
-        const idx = totalStories.findIndex(
-          (story) => story.name === result[j].name
-        );
-        if (idx === -1) {
-          totalStories.push(result[j]);
-        } else {
-          totalStories[idx].totalChapter = Math.max(
-            totalStories[idx].totalChapter,
-            result[j].totalChapter
+        const result = await listStoriesFunc();
+        for (let j = 0; j < result.length; j++) {
+          const idx = totalStories.findIndex(
+            (story) => story.name === result[j].name
           );
+          if (idx === -1) {
+            totalStories.push(result[j]);
+          } else {
+            totalStories[idx].totalChapter = Math.max(
+              totalStories[idx].totalChapter,
+              result[j].totalChapter
+            );
+          }
         }
+      } catch (err) {
+        console.error("Error at ", order[i], err);
       }
     }
 
@@ -107,9 +111,7 @@ exports.getStory = async function (storySlug) {
       }
     }
 
-
     returnStory.source = totalSource;
-    console.log(returnStory)
     return returnStory;
   } catch (error) {
     console.error("Error loading config:", error);
