@@ -88,22 +88,28 @@ exports.getStory = async function (storySlug) {
 
       const params = sourceConfig.getStory.params.join(", ");
 
-      const getStoryFunc = new Function(
-        "fetch",
-        "JSDOM",
-        `return async function(${params}){
-                  ${sourceConfig.getStory.handler}
-              }`
-      )(fetch, JSDOM);
+      try {
+        const getStoryFunc = new Function(
+          "fetch",
+          "JSDOM",
+          `return async function(${params}){
+        ${sourceConfig.getStory.handler}
+        }`
+        )(fetch, JSDOM);
 
-      const storyDetail = await getStoryFunc(storySlug);
-      if (storyDetail != null) {
-        returnStory = storyDetail;
-        totalSource.push(sourceConfig.source);
+        const storyDetail = await getStoryFunc(storySlug);
+        if (storyDetail != null) {
+          returnStory = storyDetail;
+          totalSource.push(sourceConfig.source);
+        }
+      } catch (err) {
+        console.log("Cannot get data of source: ", sourceConfig.source, err)
       }
     }
 
+
     returnStory.source = totalSource;
+    console.log(returnStory)
     return returnStory;
   } catch (error) {
     console.error("Error loading config:", error);
@@ -198,3 +204,4 @@ exports.listStoriesByCategory = async function (source, categorySlug) {
     return [];
   }
 };
+
