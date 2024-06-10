@@ -36,14 +36,15 @@ export const getChapter = async (name, chapter, server) => {
 };
 
 export const searchStories = async (query) => {
-  const source = '';
+  const source = 'truyen.tangthuvien.vn';
 
   try {
-    const response = await axiosClient.get('/stories/search', {
-      params: {
-        query: query,
-      },
-    });
+    const response = await axiosClient.post(
+      `/stories/search?source=${source}`,
+      {
+        searchString: query,
+      }
+    );
     return response;
   } catch (error) {
     console.error(error);

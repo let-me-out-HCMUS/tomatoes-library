@@ -41,13 +41,17 @@ function SearchPage({ isSearch = false }) {
         categories.filter((item) => slugConverter(item) === slug)
       );
       const fetchData = async () => {
-        // Check if it is searching
+        // is Category
         if (!isSearch) {
           const res = await getStoriesByCategory(slug);
           setStories(res.data);
           console.log(res.data);
-        } else {
+        }
+        // Seacrh
+        else {
+          console.log(slug);
           const res = await searchStories(slug);
+          setStories(res.data);
           console.log(res);
         }
       };

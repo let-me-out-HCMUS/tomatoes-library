@@ -16,16 +16,18 @@ const StoryCard = ({ story }) => {
     >
       <img
         className="rounded-xl shadow-xl cursor-pointer"
-        src={story.image}
+        src={story.coverImage}
         alt=""
       />
       <p className="mt-4 cursor-pointer hover:text-orange-400 transition-all duration-300 text-sm font-semibold md:text-lg">
         {story.name}
       </p>
       <p className="font-light tracking-wider">Tác giả: {story.author}</p>
-      <span className="font-light tracking-wider">
-        Số chương: {story.totalChapter}
-      </span>
+      {story?.totalChapter && (
+        <span className="font-light tracking-wider">
+          Số chương: {story.totalChapter}
+        </span>
+      )}
     </Link>
   );
 };

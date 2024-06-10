@@ -13,7 +13,6 @@ export default function SearchContent({ stories }) {
   };
 
   const [searchValue, setSearchValue] = useState('');
-  const [isSearch, setIsSearch] = useState(0); // if searchValue is not empty -> check value
   const [openFilter, setOpenFilter] = useState(false);
 
   const [filterValue, setFilterValue] = useState(defaultFilter);
@@ -91,6 +90,7 @@ export default function SearchContent({ stories }) {
       ></CustomDialog>
 
       {/* Products */}
+
       {stories?.length > 0 ? (
         <div className="">
           {stories.map((story, index) => (
