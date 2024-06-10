@@ -6,17 +6,16 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { Link, useNavigate } from 'react-router-dom';
-
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getCategories } from '../api/category';
 import slugConverter from '../utils/slugConverter';
 import ReorderableList from './ReorderList';
 
-
 // Xem thêm: https://mui.com/material-ui/react-app-bar/
 export default function NavBar() {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [categories, setCategories] = useState([]);
   const [isOpenNav, setIsOpenNav] = useState(false);
@@ -24,12 +23,12 @@ export default function NavBar() {
 
   const openCategoriesNav = () => {
     setIsOpenNav(!isOpenNav);
-    setIsOpenOrderNav(false)
+    setIsOpenOrderNav(false);
   };
 
   const openOrderNav = () => {
     setIsOpenOrderNav(!isOpenOrderNav);
-    setIsOpenNav(false)
+    setIsOpenNav(false);
   };
 
   useEffect(() => {
@@ -87,7 +86,8 @@ export default function NavBar() {
                     <Link
                       to={`/categories/${slugConverter(category)}`}
                       className=" block w-[200px] border-b-[1px]
-                  border-solid px-[17px] py-[16px] text-base hover:bg-slate-300 "
+                  border-solid px-[17px] py-[16px] text-base hover:bg-slate-300"
+                      onClick={() => setIsOpenNav(false)}
                     >
                       {category}
                     </Link>
@@ -113,11 +113,13 @@ export default function NavBar() {
               value={searchValue}
               onChange={(e) => {
                 setSearchValue(e.target.value);
-                setIsSearch(1);
               }}
-              onClick={() => {
-                setIsOpenNav(false)
-                setIsOpenOrderNav(false)
+              // Submit search
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  navigate(`/search/${searchValue}`);
+                }
               }}
             />
           </Search>

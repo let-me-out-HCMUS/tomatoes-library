@@ -1,9 +1,14 @@
-import StoryCard from "../../StoryCard/StoryCard";
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { AiOutlineBars, AiOutlineHeart, AiOutlineStar, AiOutlineComment } from "react-icons/ai";
-import ListChapter from "./ListChap";
-import { getContinueChap } from "../../../utils/localStorage";
+import StoryCard from '../../StoryCard/StoryCard';
+import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  AiOutlineBars,
+  AiOutlineHeart,
+  AiOutlineStar,
+  AiOutlineComment,
+} from 'react-icons/ai';
+import ListChapter from './ListChap';
+import { getContinueChap } from '../../../utils/localStorage';
 
 const Story = ({ storyData }) => {
   const { slug } = useParams();
@@ -62,13 +67,16 @@ const Story = ({ storyData }) => {
             {story.isFull ? (
               <span className=" text-green-400 font-semibold">Hoàn thành</span>
             ) : (
-              <span className=" text-red-400 font-semibold">Đang tiến hành</span>
+              <span className=" text-red-400 font-semibold">
+                Đang tiến hành
+              </span>
             )}
           </div>
           <div className="flex flex-col justify-center mt-4">
             <button
               className="bg-orange-500 text-white w-1/3 font-bold py-3 rounded-xl mb-4"
-              onClick={() => navigate(`/story/${slug}/1`)}>
+              onClick={() => navigate(`/story/${slug}/1`)}
+            >
               Đọc từ đầu
             </button>
             <button
@@ -78,32 +86,28 @@ const Story = ({ storyData }) => {
                 if (curChap <= story.totalChapter) {
                   navigate(`/story/${slug}/${curChap}`);
                 } else navigate(`/story/${slug}/${story.totalChapter}`);
-              }}>
+              }}
+            >
               Đọc tiếp
             </button>
           </div>
           <div className=" mt-4 flex justify-around">
             <button
               className=" flex flex-col"
-              onClick={() => setOpenList(!openList)}>
+              onClick={() => setOpenList(!openList)}
+            >
               <AiOutlineBars className=" text-4xl self-center" />
               <span>Mục lục</span>
             </button>
-            <button
-              className=" flex flex-col hover:cursor-not-allowed"
-              >
+            <button className=" flex flex-col hover:cursor-not-allowed">
               <AiOutlineHeart className=" text-4xl self-center" />
               <span>{Math.floor(Math.random() * (10000 - 10 + 1)) + 10}</span>
             </button>
-            <button
-              className=" flex flex-col hover:cursor-not-allowed"
-              >
+            <button className=" flex flex-col hover:cursor-not-allowed">
               <AiOutlineStar className=" text-4xl self-center" />
               <span>Đánh giá</span>
             </button>
-            <button
-              className=" flex flex-col hover:cursor-not-allowed"
-              >
+            <button className=" flex flex-col hover:cursor-not-allowed">
               <AiOutlineComment className=" text-4xl self-center" />
               <span>Bình luận</span>
             </button>
@@ -116,7 +120,7 @@ const Story = ({ storyData }) => {
       <div className="mt-4 py-4 border-y-2">
         <span className="font-semibold">Tóm tắt</span>
         <p className=" text-sm">
-          {story.description.split("<br>\n<br>").map((item, key) => {
+          {story.description.split('<br>\n<br>').map((item, key) => {
             return (
               <span key={key}>
                 {item}
