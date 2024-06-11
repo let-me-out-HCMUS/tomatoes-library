@@ -18,9 +18,7 @@ export default function SpecialStory() {
             tháng đứng đầu bảng xếp hạng, "Mục thần ký" đã chứng minh được sức
             hút của mình.
           </p>
-
-          {/* TODO: navigate to story  */}
-          <Link to="/stories/cac-nguoi-tu-tien-ta-lam-ruong/1">
+          <Link to="/story/muc-than-ky">
             <button className="mt-6 py-2 w-full bg-[#778B37] text-white rounded-lg">
               Đọc ngay
             </button>
