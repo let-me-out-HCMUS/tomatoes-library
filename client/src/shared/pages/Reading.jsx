@@ -25,17 +25,7 @@ export default function ReadingPage() {
   const { slug, chapter } = useParams();
   const navigate = useNavigate();
 
-  // let listChap = JSON.parse(localStorage.getItem(slug)) || [];
-  // if (!listChap.includes(chapter))
-  // {
-  //   listChap.push(chapter);
-  //   listChap.sort((a, b) => a - b);
-  //   localStorage.setItem(`${slug}`, JSON.stringify(listChap));
-  // }
-
   const [isLoading, setIsLoading] = useState(true);
-
-  // console.log(slug, chapter);
 
   // handle style text
   const [color, setColor] = useState(localStorage.getItem('color') || '  ');
@@ -81,8 +71,8 @@ export default function ReadingPage() {
     };
 
     addChapToLocalStorage(slug, chapter);
-    // Run handleScroll every 10sec
-    const intervalId = setInterval(updatePos, 10000);
+    // Run handleScroll every 5sec
+    const intervalId = setInterval(updatePos, 5000);
 
     // Cleanup function to clear the interval when the component unmounts
     return () => {
@@ -98,13 +88,14 @@ export default function ReadingPage() {
   useLayoutEffect(() => {
     async function fetchData() {
       try {
-        let resChap = await getChapter(slug, chapter, server);
         let resStory = await getStory(slug);
+        let resChap = await getChapter(slug, chapter, resStory.data.source[server - 1]);
 
         Promise.all([resChap, resStory]).then((values) => {
           setChapterContent(values[0]?.data);
           setStory(values[1]?.data);
           setIsLoading(false);
+         
           const scrollY = localStorage.getItem(`${slug}-${chapter}`);
           window.scrollTo(0, scrollY);
         });
@@ -120,6 +111,7 @@ export default function ReadingPage() {
     async function fetchData() {
       try {
         let res = await getChapter(slug, chapter, story?.source[server - 1]);
+  
         setChapterContent(res.data);
         setServer(server);
 
@@ -135,6 +127,8 @@ export default function ReadingPage() {
     setIsLoading(false);
   };
 
+  // if (story.name) return <div className=" text-center text-6xl p-10">The story do not exist</div>;
+  // else
   return (
     <div className=" relative h-full">
       {/* Loading Component */}
@@ -212,7 +206,7 @@ export default function ReadingPage() {
         {chapter > 1 ? (
           <button
             className=" border-b-2 border-solid border-black border-opacity-20 py-2"
-            onClick={() => fetchChapter(parseInt(chapter) - 1)}
+            onClick={() => fetchChapter(parseInt(chapter) - 1, server)}
           >
             <AiOutlineLeft />
           </button>
@@ -237,7 +231,7 @@ export default function ReadingPage() {
         {chapter < story?.totalChapter ? (
           <button
             className=" border-b-2 border-solid border-black border-opacity-20 py-2 self-center"
-            onClick={() => fetchChapter(parseInt(chapter) + 1)}
+            onClick={() => fetchChapter(parseInt(chapter) + 1, server)}
           >
             <AiOutlineRight />
           </button>
