@@ -3,18 +3,25 @@
     "source": "truyen.tangthuvien.vn",
     "name": "Tàng Thư Viện",
     "getContent": {
-      "params": ["storySlug", "chapter"],
+      "params": [
+        "storySlug",
+        "chapter"
+      ],
       "handler": "let url = `https://truyen.tangthuvien.vn/doc-truyen/${storySlug}/chuong-${chapter}/`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let content = document.querySelector('.box-chap').innerHTML; return content;"
     },
     "listStories": {
       "handler": "let url = `https://truyen.tangthuvien.vn/tong-hop`;let response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;let stories = Array.from(document.querySelector('.book-img-text').querySelectorAll('li')).map(li => {const a = li.querySelectorAll('a');return {coverImage: a[0].querySelector('img').src, name: a[1].innerHTML, author: a[2].innerHTML, slug: document.querySelector('.book-img-box a').href.split('/').at(-1)};});return stories;"
     },
     "getStory": {
-      "params": ["storySlug"],
+      "params": [
+        "storySlug"
+      ],
       "handler": "let url = `https://truyen.tangthuvien.vn/doc-truyen/${storySlug}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; const imgUrl = document.querySelector('.book-img a img').src; const storyName = document.querySelector('.book-info h1').innerHTML.split(' - ')[0]; const description = document.querySelector('.book-intro p').innerHTML; const dataTag = document.querySelector('.book-info p'); const author = dataTag.querySelector('a').innerHTML; const isFull = dataTag.querySelector('span').innerHTML === 'Đang ra' ? false : true; const category = dataTag.querySelectorAll('a')[1].innerHTML; const totalChapter = parseInt(document.querySelectorAll('.detail')[1].querySelector('p a').innerHTML.split(' ')[1], 10); let story = { name: storyName, description: description, category: category, totalChapter: totalChapter, author: author, coverImage: imgUrl, isFull: isFull }; return story;"
     },
     "search": {
-      "params": ["searchString"],
+      "params": [
+        "searchString"
+      ],
       "handler": "let url = `https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=${searchString}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.book-img-text').querySelectorAll('li'); let stories = []; for (let i = 0; i < nodeList.length; i++) { const a = nodeList[i].querySelectorAll('a'); stories.push({ coverImage: a[0].querySelector('img').src, name: a[1].innerHTML, author: a[2].innerHTML }); } return stories;"
     },
     "category": {
@@ -22,7 +29,9 @@
         "handler": "let url = 'https://truyen.tangthuvien.vn/the-loai/canh-ky'; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.nav-list.site-nav.fl').querySelectorAll('a:not([class]):not([id])'); let categories = []; for (let i = 0; i < nodeList.length; i++) { categories.push(nodeList[i].innerHTML); } return categories;"
       },
       "getStories": {
-        "params": ["categorySlug"],
+        "params": [
+          "categorySlug"
+        ],
         "handler": "let url = `https://truyen.tangthuvien.vn/the-loai/${categorySlug}`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let nodeList = document.querySelector('.update-table.all').querySelectorAll('tr'); let stories = []; for (let i = 0; i < nodeList.length; i++) { const td = nodeList[i].querySelectorAll('a'); stories.push({ name: td[1].innerHTML, category: td[0].innerHTML, totalChapter: parseInt(td[2].innerHTML.split(' ')[1], 10), author: td[3].innerHTML }); } return stories;"
       }
     }
@@ -31,18 +40,25 @@
     "source": "metruyen.net.vn",
     "name": "Mê Truyện",
     "getContent": {
-      "params": ["storySlug", "chapter"],
+      "params": [
+        "storySlug",
+        "chapter"
+      ],
       "handler": "const url = `https://metruyen.net.vn/truyen/${storySlug}/chuong-${chapter}`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelector('.text-left').querySelectorAll('p')).map(p => p.textContent).join('\\n');"
     },
     "listStories": {
-      "handler": "const url = 'https://metruyen.net.vn/';const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelectorAll('.page-item-detail.text')).map(function (p) {const tagTitle = p.querySelector('.item-summary .h5  a')return {     coverImage: p.querySelector('img').dataset.src,     name: tagTitle.text,     slug: tagTitle.href.split('/').at(-1),     author: 'Đang cập nhật' }});"
+      "handler": "const url = 'https://metruyen.net.vn/';const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelectorAll('.page-item-detail.text')).map(function (p) {const tagTitle = p.querySelector('.item-summary .h5  a');return {     coverImage: p.querySelector('img').dataset.src,     name: tagTitle.text,     slug: tagTitle.href.split('/').at(-1),     author: 'Đang cập nhật' }});"
     },
     "getStory": {
-      "params": ["storySlug"],
+      "params": [
+        "storySlug"
+      ],
       "handler": "const url = `https://metruyen.net.vn/truyen/${storySlug}`;const response = await fetch(url);const data = await response.text();const parsed = data.replace(new RegExp('<script type=\\'application/ld+json\\'>.*?</script>'), '');const dom = new JSDOM(parsed);const document = dom.window.document;const coverImage = document.querySelector('.summary_image img').dataset.src;const name = document.querySelector('h1').innerHTML.trim();const author = document.querySelector('.author-content a').innerHTML;const category = Array.from(document.querySelectorAll('.genres a')).map(tag => tag.innerHTML).join(', ') ?? 'Đang cập nhật';const description = Array.from(document.querySelectorAll('.summary_content.more p')).map(tag => tag.innerHTML).join(', ');const isFull = document.querySelector('.full').innerHTML.toLowerCase() === 'full';const slug = document.querySelector('.summary_image a').href.split('/').at(-1);const maxChapterSource = document.querySelector('.chapter-count').innerHTML;const totalChapter = parseInt(maxChapterSource.substring(1, maxChapterSource.length - 1));return {coverImage, name, author, category, description: description ? description : 'Đang câp nhật', isFull, slug, totalChapter};"
     },
     "search": {
-      "params": ["searchString"],
+      "params": [
+        "searchString"
+      ],
       "handler": "const url = `https://metruyen.net.vn/?s=${searchString.replace(' ', '+')}&post_type=wp-manga`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelectorAll('.row.c-tabs-item__content')).map((inner) => ({name: inner.querySelector('h3 a').innerHTML, slug: inner.querySelector('h3 a').href.split('/').at(-1), banner: inner.querySelector('img').dataset.src, author: inner.querySelector('.mg_author .summary-content a').innerHTML, isFull: inner.querySelector('.mg_status .summary-content').innerHTML.trim() === 'Hoàn Thành', genres: Array.from(inner.querySelectorAll('.mg_genres .summary-content a')).map(tag => tag.innerHTML)}))"
     },
     "category": {
@@ -50,8 +66,47 @@
         "handler": "const url = 'https://metruyen.net.vn/';const response = await fetch(url);const htmlData = await response.text();const regex = /<div class='row genres'>.+?<ul class='list-unstyled'>(.+?)<\\/ul>.+?<\\/div>/s;const dom = new JSDOM(htmlData.match(regex)[1]);const document = dom.window.document;return Array.from(document.querySelectorAll('a')).map(row => ({name: row.innerHTML.trim(), slug: row.href.split('/').at(-1)}));"
       },
       "getStories": {
-        "params": ["categorySlug"],
+        "params": [
+          "categorySlug"
+        ],
         "handler": "const url = `https://metruyen.net.vn/the-loai/${categorySlug}`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;const stories = [];const tag = document.querySelectorAll('.page-item-detail.text');tag.forEach(inner => {stories.push({     coverImage: inner.querySelector('img').dataset.src,     name: inner.querySelector('h3 a').innerHTML,     slug: inner.querySelector('h3 a').href.split('/').at(-1),     isFull: document.querySelector('.manga-name-badges.custom.full').innerHTML === 'Full' })});return stories;"
+      }
+    }
+  },
+  {
+    "source": "metruyenhot.com.vn",
+    "name": "Mê truyện hot",
+    "getContent": {
+      "params": [
+        "storySlug",
+        "chapter"
+      ],
+      "handler": "const url = `https://metruyenhot.com.vn/${storySlug}/${chapterSlug}`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelector('.book-list.full-story.content.chapter-c').childNodes).map((item) => item.textContent).join('\\n').trim();"
+    },
+    "listStories": {
+      "handler": "const url = `https://metruyenhot.com.vn/`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelectorAll('.col-xs-4.col-md-2.book-item')).map((item) => ({coverImage: item.querySelector('.image-book').dataset.src, name: item.querySelector('.name-book').textContent, slug: item.querySelector('.thumb').href.split('/').at(1), author: 'Đang cập nhật',}));"
+    },
+    "getStory": {
+      "params": [
+        "storySlug"
+      ],
+      "handler": "const url = `https://metruyenhot.com.vn/${storySlug}`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return {name: document.querySelector('.title h1').textContent, author: document.querySelector('.info span').textContent, coverImage: document.querySelector('.col-12.col-md-4.text-center img').dataset.src, category: Array.from(document.querySelector('.info').childNodes[3].querySelectorAll('span')).map((item) => item.textContent).join(', '), isFull: document.querySelector('.status').textContent !== 'Đang ra', description: document.querySelector('.content1').childNodes[4].textContent, slug: document.querySelector('.url_comment_facebook').value.split('/').at(-2),};"
+    },
+    "search": {
+      "params": [
+        "searchString"
+      ],
+      "handler": "const url = `https://metruyen.net.vn/?s=${searchString.replace(' ', '+')}&post_type=wp-manga`; const response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; const stories = []; const entry = document.querySelectorAll('.row.c-tabs-item__content'); entry.forEach(inner => {   stories.push({     title: inner.querySelector('h3 a').innerHTML,     slug: inner.querySelector('h3 a').href.split('/').at(-1),     banner: inner.querySelector('img').dataset.src,     author: inner.querySelector('.mg_author .summary-content a').innerHTML,     isFull: inner.querySelector('.mg_status .summary-content').innerHTML.trim() === 'Hoàn Thành',     genres: Array.from(inner.querySelectorAll('.mg_genres .summary-content a')).map(tag => tag.innerHTML)   }); }); return stories;"
+    },
+    "category": {
+      "list": {
+        "handler": "const url = `https://metruyenhot.com.vn/`;const response = await fetch(url);const htmlData = await response.text();const dom = new jsdom.JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelectorAll('.sub-menu-maga li a')).slice(0, 47).map(a => ({name: a.title, slug: a.href.split('/').at(-2)}))"
+      },
+      "getStories": {
+        "params": [
+          "categorySlug"
+        ],
+        "handler": "const url = `https://metruyenhot.com.vn/the-loai/${categorySlug}`;const response = await fetch(url);const htmlData = await response.text();const dom = new jsdom.JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelectorAll('tr')).map(tag => ({name: tag.querySelector('h3 a').title, coverImage: tag.querySelector('img').dataset.src, totalChapter: parseInt(tag.querySelector('.chap.pc a').text.split(' ')[1]), author: tag.querySelector(`[itemprop=author]`).innerHTML, category: Array.from(tag.querySelectorAll('.info p')[2].querySelectorAll('a')).map(a => a.text).join(', '), isFull: 'Đang cập nhật', slug: tag.querySelector('h3 a').href.split('/').at(-2)}))"
       }
     }
   }
