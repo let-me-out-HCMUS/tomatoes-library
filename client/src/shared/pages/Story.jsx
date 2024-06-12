@@ -6,7 +6,7 @@ import Spinner from "../../features/common/Spinner";
 
 const StoryPage = () => {
   const { slug } = useParams();
-
+  scrollTo(0, 0);
   const [story, setStory] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -15,6 +15,7 @@ const StoryPage = () => {
       const res = await getStory(slug);
 
       setStory(res.data);
+      
       setIsLoading(false);
     };
 
