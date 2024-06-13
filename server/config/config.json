@@ -81,7 +81,7 @@
         "storySlug",
         "chapter"
       ],
-      "handler": "const url = `https://metruyenhot.com.vn/${storySlug}/${chapterSlug}`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelector('.book-list.full-story.content.chapter-c').childNodes).map((item) => item.textContent).join('\\n').trim();"
+      "handler": "const url = `https://metruyenhot.com.vn/${storySlug}/chuong-${chapter}`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelector('.book-list.full-story.content.chapter-c').childNodes).map((item) => item.textContent).join('\\n').trim();"
     },
     "listStories": {
       "handler": "const url = `https://metruyenhot.com.vn/`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelectorAll('.col-xs-4.col-md-2.book-item')).map((item) => ({coverImage: item.querySelector('.image-book').dataset.src, name: item.querySelector('.name-book').textContent, slug: item.querySelector('.thumb').href.split('/').at(1), author: 'Đang cập nhật',}));"
