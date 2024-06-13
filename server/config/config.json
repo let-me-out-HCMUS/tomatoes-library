@@ -10,7 +10,7 @@
       "handler": "let url = `https://truyen.tangthuvien.vn/doc-truyen/${storySlug}/chuong-${chapter}/`; let response = await fetch(url); const htmlData = await response.text(); const dom = new JSDOM(htmlData); const document = dom.window.document; let content = document.querySelector('.box-chap').innerHTML; return content;"
     },
     "listStories": {
-      "handler": "let url = `https://truyen.tangthuvien.vn/tong-hop`;let response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;let stories = Array.from(document.querySelector('.book-img-text').querySelectorAll('li')).map(li => {const a = li.querySelectorAll('a');return {coverImage: a[0].querySelector('img').src, name: a[1].innerHTML, author: a[2].innerHTML, slug: document.querySelector('.book-img-box a').href.split('/').at(-1)};});return stories;"
+      "handler": "const url = `https://truyen.tangthuvien.vn/tong-hop`;const response = await fetch(url);const htmlData = await response.text();const dom = new JSDOM(htmlData);const document = dom.window.document;return Array.from(document.querySelector('.book-img-text').querySelectorAll('li')).map(li => {const a = li.querySelectorAll('a');return {     coverImage: a[0].querySelector('img').src,     name: a[1].innerHTML,     author: a[2].innerHTML,     slug: li.querySelector('.book-img-box a').href.split('/').at(-1) };});"
     },
     "getStory": {
       "params": [
