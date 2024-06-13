@@ -16,9 +16,9 @@ function SearchPage({ isSearch = false }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState();
   const [stories, setStories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   // Use Spinner wait for data
-  console.log(sourceOrder)
+  // console.log(sourceOrder)
   // Categories
   useEffect(() => {
     async function fetchData() {
@@ -38,31 +38,32 @@ function SearchPage({ isSearch = false }) {
     }
     fetchData();
   }, []);
-  console.log(isSearch  )
+  
   // Stories
   useEffect(() => {
     if (slug) {
+      setIsLoading(true);
       setSelectedCategory(
         categories.filter((item) => slugConverter(item) === slug)
       );
       const fetchData = async () => {
+        // console.log('call fetch')
         // is Category
         if (!isSearch) {
-          const res = await getStoriesByCategory(slug);
+          const res = await getStoriesByCategory(slug.replace(/%20/g, " "));
           setStories(res.data);
-          console.log(res.data);
+          // console.log(res.data);
         }
         // Seacrh
         else {
-          console.log('source',sourceOrder[0].source);
-          const res = await searchStories(slug, sourceOrder[0].source);
-          setStories(res.data);
-          console.log(res);
+          // console.log('source',sourceOrder[0].source);
+          const res = await searchStories(slug.replace(/%20/g, " "), sourceOrder[0].source);
+          setStories(res?.data);
+          // console.log(res);
         }
-        setIsLoading(false);
       };
-      fetchData();
-      
+      fetchData().finally(() => setIsLoading(false));
+      // setIsLoading(false);
     }
   }, [slug]);
 
