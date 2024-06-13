@@ -35,8 +35,8 @@ export const getChapter = async (name, chapter, server) => {
   }
 };
 
-export const searchStories = async (query) => {
-  const source = 'truyen.tangthuvien.vn';
+export const searchStories = async (query, source) => {
+  // const source = 'truyen.tangthuvien.vn';
 
   try {
     const response = await axiosClient.post(
