@@ -10,7 +10,14 @@ export default function ({ children }){
 
     useEffect(() => {
         (async function() {
+            const response = await getSources()
             if (localStorage[SOURCES_ORDER]){
+                if (response.status === "success") {
+                    let data = response.data
+                    if (data.length !== JSON.parse(localStorage[SOURCES_ORDER]).length) {
+                        localStorage.setItem(SOURCES_ORDER, JSON.stringify(data))
+                    }
+                }
                 setSourceOrder(JSON.parse(localStorage[SOURCES_ORDER]))
                 return
             }
