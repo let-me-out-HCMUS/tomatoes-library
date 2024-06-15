@@ -1,5 +1,5 @@
 # Overview
-Group final project of class Design Software - Application for aggregating and reading online novels
+Group final project of class Software Design - Application for aggregating and reading online novels
 # Members
 - [Dat](https://github.com/vtd182)
 - [Khang](https://github.com/hkhangus/)
