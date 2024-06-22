@@ -15,7 +15,7 @@ export default function ({children}) {
 				const fromServer = response.data;
 				const fromLocal = JSON.parse(localStorage.getItem(SOURCES_ORDER));
 
-				if (fromServer.length !== fromLocal.length) {
+				if (fromServer.length !== fromLocal?.length) {
 					localStorage.setItem(SOURCES_ORDER, JSON.stringify(fromLocal));
 					setSourceOrder(fromServer)
 				} else {
